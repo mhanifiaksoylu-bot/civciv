@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CivCiv - Çocuk Eğlence, Sanat ve Ders Portalı</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(180deg, #fef3c7 0%, #fffbeb 50%, #fed7aa 100%);
+      --accent: #f59e0b;
+      --accent-dark: #b45309;
+      --card-border: #fcd34d;
+    }
+    body.theme-civciv {
+      --bg-gradient: linear-gradient(180deg, #fef3c7 0%, #fffbeb 50%, #fed7aa 100%);
+      --accent: #f59e0b;
+      --accent-dark: #b45309;
+      --card-border: #fcd34d;
+    }
+    body.theme-mavi {
+      --bg-gradient: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 50%, #bae6fd 100%);
+      --accent: #0284c7;
+      --accent-dark: #0369a1;
+      --card-border: #7dd3fc;
+    }
+    body.theme-yesil {
+      --bg-gradient: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 50%, #bbf7d0 100%);
+      --accent: #16a34a;
+      --accent-dark: #15803d;
+      --card-border: #86efac;
+    }
+    body.theme-pembe {
+      --bg-gradient: linear-gradient(180deg, #fce7f3 0%, #fdf2f8 50%, #fbcfe8 100%);
+      --accent: #db2777;
+      --accent-dark: #be185d;
+      --card-border: #f472b6;
+    }
+    body.theme-gece {
+      --bg-gradient: linear-gradient(180deg, #1e1b4b 0%, #0f172a 50%, #030712 100%);
+      --accent: #6366f1;
+      --accent-dark: #4f46e5;
+      --card-border: #818cf8;
+      color: #f8fafc;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      min-height: 100vh;
+    }
+
+    .card-bounce {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+    }
+    .card-bounce:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+    .card-bounce:active {
+      transform: scale(0.97);
+    }
+
+    @keyframes pulse-btn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .pulse-btn {
+      animation: pulse-btn 2.2s infinite ease-in-out;
+    }
+
+    @keyframes chickHop {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px) rotate(-3deg); }
+    }
+    .chick-animate {
+      display: inline-block;
+      animation: chickHop 2s infinite ease-in-out;
+    }
+
+    /* Karakter Canlandırma Animasyonları */
+    @keyframes anim-dance {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-14deg) translateY(-8px) scale(1.05); }
+      75% { transform: rotate(14deg) translateY(-8px) scale(1.05); }
+    }
+    @keyframes anim-jump {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-55px) scaleY(1.1); }
+    }
+    @keyframes anim-fly {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(30px, -30px) rotate(8deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    @keyframes anim-run {
+      0%, 100% { transform: translateX(-15px) skewX(-6deg); }
+      50% { transform: translateX(15px) skewX(6deg); }
+    }
+    @keyframes anim-shake {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-12deg) scale(1.1); }
+      40% { transform: rotate(12deg) scale(0.95); }
+      60% { transform: rotate(-10deg); }
+      80% { transform: rotate(10deg); }
+    }
+    .char-dance { animation: anim-dance 0.75s infinite ease-in-out; }
+    .char-jump  { animation: anim-jump 0.65s infinite cubic-bezier(0.28, 0.84, 0.42, 1); }
+    .char-fly   { animation: anim-fly 1.8s infinite ease-in-out; }
+    .char-run   { animation: anim-run 0.5s infinite linear; }
+    .char-shake { animation: anim-shake 0.4s infinite ease-in-out; }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="theme-civciv flex flex-col justify-between p-2 sm:p-4 transition-colors duration-300">
+
+  <!-- ==================== ÜST ÇUBUK / HEADER ==================== -->
+  <header class="max-w-6xl mx-auto w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-xl border-4 border-amber-300 dark:border-indigo-500 flex flex-wrap items-center justify-between gap-3 mb-4 sticky top-1 z-40">
+    <!-- Sol Logo & Slogan -->
+    <div onclick="showScreen('lobby-screen')" class="flex items-center gap-3 cursor-pointer group">
+      <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl shadow-md border-2 border-yellow-200 chick-animate">
+        🐥
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-2xl sm:text-3xl font-black tracking-wide text-amber-700 dark:text-amber-400 group-hover:scale-105 transition-transform">
+            CivCiv
+          </h1>
+          <span class="text-[10px] sm:text-xs bg-amber-500 text-white font-black px-2.5 py-0.5 rounded-full shadow-sm">
+            Çocuk Dünyası
+          </span>
+        </div>
+        <p class="text-[11px] sm:text-xs font-black text-amber-900/80 dark:text-amber-200/90 italic flex items-center gap-1">
+          <span>❤️</span> "Ebeveynlerinin cicileri için hazırlandı"
+        </p>
+      </div>
+    </div>
+
+    <!-- Sağ Profil & Kontroller -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Tekrar Havuzu Butonu -->
+      <button onclick="openMistakesModal()" class="card-bounce relative bg-rose-500 hover:bg-rose-600 text-white px-3 py-1.5 rounded-2xl font-black text-xs sm:text-sm flex items-center gap-1.5 shadow">
+        <span>📝</span> <span class="hidden md:inline">Tekrar Havuzu</span>
+        <span id="header-mistakes-badge" class="bg-white text-rose-600 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black shadow border border-rose-300">0</span>
+      </button>
+
+      <!-- Yıldız Sayacı -->
+      <div class="flex items-center gap-1.5 bg-yellow-300/90 dark:bg-amber-500/20 px-3 py-1.5 rounded-2xl border-2 border-yellow-400 shadow-sm">
+        <span class="text-xl">⭐</span>
+        <span id="header-stars-display" class="font-black text-amber-950 dark:text-amber-300 text-base sm:text-lg">35</span>
+      </div>
+
+      <!-- Profil Butonu -->
+      <button onclick="openProfileModal()" class="card-bounce bg-amber-100 dark:bg-slate-800 border-2 border-amber-400 dark:border-indigo-400 px-2.5 py-1.5 rounded-2xl flex items-center gap-2 shadow-sm">
+        <span id="header-avatar" class="text-2xl">🐥</span>
+        <div class="hidden sm:block text-left leading-tight">
+          <div id="header-name" class="font-black text-xs text-amber-950 dark:text-amber-200">Cici Ali</div>
+          <div id="header-grade" class="text-[10px] font-bold text-amber-700 dark:text-indigo-300">3. Sınıf</div>
+        </div>
+      </button>
+
+      <!-- Geliştirici & İletişim Butonu -->
+      <button onclick="openDeveloperModal()" class="card-bounce bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1.5 rounded-2xl font-black text-xs flex items-center gap-1.5 shadow" title="Geliştirici & İletişim">
+        <span>👨‍💻</span> <span class="hidden lg:inline">Künye</span>
+      </button>
+
+      <!-- Tema Değiştirici Buton -->
+      <button onclick="openThemeModal()" class="card-bounce bg-slate-100 dark:bg-slate-800 p-2 sm:p-2.5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 shadow text-lg" title="Renk Teması">
+        🎨
+      </button>
+
+      <!-- Ses Aç/Kapa Buton -->
+      <button id="sound-btn" onclick="toggleSound()" class="card-bounce bg-amber-200 dark:bg-slate-800 p-2 sm:p-2.5 rounded-2xl border-2 border-amber-400 dark:border-slate-700 shadow text-lg" title="Ses">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== ANA ALAN (EKRANLAR) ==================== -->
+  <main class="max-w-6xl mx-auto w-full flex-1">
+
+    <!-- 1. LOBİ EKRANI (ANA SAYFA) -->
+    <section id="lobby-screen" class="space-y-6">
+      
+      <!-- Hoş Geldin Afişi -->
+      <div class="bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 dark:from-indigo-900 dark:to-purple-900 rounded-3xl p-5 sm:p-7 border-4 border-yellow-200 dark:border-indigo-600 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-center md:text-left z-10">
+          <div class="inline-flex items-center gap-2 bg-white/90 dark:bg-slate-900/80 px-3 py-1 rounded-full text-amber-950 dark:text-amber-300 text-xs font-black mb-2 shadow-sm">
+            <span>✨</span> Hoş Geldin Sevgili <span id="lobby-welcome-name">Cici Ali</span>!
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-black text-amber-950 dark:text-white mb-2 leading-tight">
+            Eğlen, Sanatını Çiz ve Derslerini Çöz!
+          </h2>
+          <p class="text-amber-900 dark:text-amber-200 text-xs sm:text-base font-bold max-w-xl">
+            Sihirli resim canlandırma atölyesi, hızlı araba pistleri, boyama kitabı, 100 zeka oyunu ve çözümlü soru bankası seni bekliyor!
+          </p>
+        </div>
+        <div class="text-7xl sm:text-8xl chick-animate filter drop-shadow-xl shrink-0">
+          🐥
+        </div>
+      </div>
+
+      <!-- 4 BÜYÜK DÜNYA SEÇİM KARTLARI -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Kart 1: Çizimini Canlandır -->
+        <div onclick="showScreen('animator-screen')" class="card-bounce bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-fuchsia-300 hover:border-fuchsia-500 shadow-lg cursor-pointer flex flex-col items-center text-center">
+          <div class="w-18 h-18 rounded-2xl bg-fuchsia-100 dark:bg-fuchsia-950 flex items-center justify-center text-5xl mb-3 p-3">✨</div>
+          <h3 class="text-xl font-black text-fuchsia-700 dark:text-fuchsia-300">Resmini Canlandır</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1">Kendi çizdiğin karakteri sahnede dans ettir, uçur ve koştur!</p>
+          <span class="mt-4 inline-block bg-fuchsia-500 text-white text-xs font-black px-4 py-2 rounded-xl shadow">Sihirli Tuval ➔</span>
+        </div>
+
+        <!-- Kart 2: Araba Oyunları -->
+        <div onclick="startHighwayCarGame()" class="card-bounce bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-sky-300 hover:border-sky-500 shadow-lg cursor-pointer flex flex-col items-center text-center">
+          <div class="w-18 h-18 rounded-2xl bg-sky-100 dark:bg-sky-950 flex items-center justify-center text-5xl mb-3 p-3">🏎️</div>
+          <h3 class="text-xl font-black text-sky-700 dark:text-sky-300">Araba Yarışları</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1">Otoyol Rallisi ve Tepe Tırmanma Off-Road maceraları!</p>
+          <span class="mt-4 inline-block bg-sky-500 text-white text-xs font-black px-4 py-2 rounded-xl shadow">Direksiyona Geç ➔</span>
+        </div>
+
+        <!-- Kart 3: Boyama Kitabı -->
+        <div onclick="showScreen('coloring-screen')" class="card-bounce bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-emerald-300 hover:border-emerald-500 shadow-lg cursor-pointer flex flex-col items-center text-center">
+          <div class="w-18 h-18 rounded-2xl bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-5xl mb-3 p-3">🖍️</div>
+          <h3 class="text-xl font-black text-emerald-700 dark:text-emerald-300">Boyama Kitabı</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1">Kral Şakir, Arabalar, Disney, Hayvanlar ve Doğa şablonları!</p>
+          <span class="mt-4 inline-block bg-emerald-500 text-white text-xs font-black px-4 py-2 rounded-xl shadow">Hemen Boya ➔</span>
+        </div>
+
+        <!-- Kart 4: Ders Çalış & Çöz -->
+        <div onclick="showScreen('school-screen')" class="card-bounce bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-amber-300 hover:border-amber-500 shadow-lg cursor-pointer flex flex-col items-center text-center">
+          <div class="w-18 h-18 rounded-2xl bg-amber-100 dark:bg-amber-950 flex items-center justify-center text-5xl mb-3 p-3">📚</div>
+          <h3 class="text-xl font-black text-amber-700 dark:text-amber-300">Ders Çalış & Çöz</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1">Açıklamalı çözümlü soru bankası, karne ve Tekrar Havuzu!</p>
+          <span class="mt-4 inline-block bg-amber-500 text-white text-xs font-black px-4 py-2 rounded-xl shadow">Derslere Başla ➔</span>
+        </div>
+
+      </div>
+
+      <!-- ARABA OYUNLARI HIZLI ERİŞİM KARTI -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-sky-300 dark:border-sky-600 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🚗</span>
+            <div>
+              <h3 class="text-lg font-black text-sky-800 dark:text-sky-300">CivCiv Hız Pisti & Macera</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 font-bold">2 Farklı Oyun: Trafikten Kaçış veya Dik Tepeleri Tırman!</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div onclick="startHighwayCarGame()" class="card-bounce bg-gradient-to-r from-sky-50 to-blue-100 dark:from-slate-800 dark:to-sky-950 p-3.5 rounded-2xl border-2 border-sky-300 flex items-center gap-3 cursor-pointer">
+            <span class="text-4xl">🏎️</span>
+            <div>
+              <h4 class="font-black text-sm text-sky-900 dark:text-sky-200">1. CivCiv Otoyol Rallisi</h4>
+              <p class="text-[11px] text-gray-600 dark:text-gray-300 font-bold">Makas at, benzin topla ve yüksek skora ulaş!</p>
+            </div>
+          </div>
+          <div onclick="startHillClimbGame()" class="card-bounce bg-gradient-to-r from-emerald-50 to-green-100 dark:from-slate-800 dark:to-emerald-950 p-3.5 rounded-2xl border-2 border-emerald-300 flex items-center gap-3 cursor-pointer">
+            <span class="text-4xl">🚙</span>
+            <div>
+              <h4 class="font-black text-sm text-emerald-900 dark:text-emerald-200">2. Tepe Tırmanma Off-Road</h4>
+              <p class="text-[11px] text-gray-600 dark:text-gray-300 font-bold">Gaz ve fren dengesini kur, dik tepeleri takla atmadan aş!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OYUN & ZEKA GÖREVLERİNE GEÇİŞ -->
+      <div onclick="showScreen('games-hub-screen')" class="card-bounce bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-indigo-300 dark:border-indigo-600 shadow-lg cursor-pointer flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <span class="text-4xl">🎮</span>
+          <div>
+            <h3 class="text-lg font-black text-indigo-700 dark:text-indigo-300">100 Çocuk Gelişim Oyunu & Arcade</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-bold">Yıldız Avcısı, Süper Hafıza, Bahçe Refleksi ve 100 Bilişsel Zeka Görevi</p>
+          </div>
+        </div>
+        <span class="bg-indigo-600 text-white font-black text-xs px-4 py-2 rounded-xl shadow">Aç ➔</span>
+      </div>
+
+    </section>
+
+    <!-- 2. SİHİRLİ ÇİZİM VE CANLANDIRMA ATÖLYESİ -->
+    <section id="animator-screen" class="hidden space-y-4">
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border-2 border-fuchsia-300">
+        <button onclick="requestExitToLobby()" class="pulse-btn bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
+          🐥 CivCiv'e Dön
+        </button>
+        <h2 class="text-base sm:text-lg font-black text-fuchsia-700 dark:text-fuchsia-300 flex items-center gap-2">
+          <span>✨</span> Sihirli Çizim ve Canlandırma Atölyesi
+        </h2>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Sol: Çizim Tuvali -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 border-4 border-fuchsia-300 shadow-md flex flex-col items-center">
+          <div class="w-full flex items-center justify-between mb-2">
+            <span class="font-black text-xs sm:text-sm text-fuchsia-800 dark:text-fuchsia-300">1. Resmini Çiz (Canavar, Robot, Araba...)</span>
+            <button onclick="clearDrawCanvas()" class="text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold px-3 py-1 rounded-xl">
+              Temizle 🗑️
+            </button>
+          </div>
+
+          <div class="w-full relative flex justify-center bg-gray-50 dark:bg-slate-800 border-2 border-dashed border-fuchsia-300 rounded-2xl overflow-hidden">
+            <canvas id="draw-canvas" width="340" height="340" class="cursor-crosshair bg-white touch-none shadow-inner"></canvas>
+          </div>
+
+          <!-- Palet & Fırça -->
+          <div class="w-full mt-3 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5" id="draw-palette">
+              <button onclick="setDrawColor('#1e293b')" class="w-7 h-7 rounded-full bg-slate-800 ring-2 ring-offset-1 ring-slate-800"></button>
+              <button onclick="setDrawColor('#ef4444')" class="w-7 h-7 rounded-full bg-red-500"></button>
+              <button onclick="setDrawColor('#f59e0b')" class="w-7 h-7 rounded-full bg-amber-500"></button>
+              <button onclick="setDrawColor('#10b981')" class="w-7 h-7 rounded-full bg-emerald-500"></button>
+              <button onclick="setDrawColor('#3b82f6')" class="w-7 h-7 rounded-full bg-blue-500"></button>
+              <button onclick="setDrawColor('#8b5cf6')" class="w-7 h-7 rounded-full bg-purple-500"></button>
+              <button onclick="setDrawColor('#ffffff')" class="w-7 h-7 rounded-full bg-white border-2 border-gray-400 text-xs flex items-center justify-center" title="Silgi">🧽</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-gray-500">Kalınlık:</span>
+              <input type="range" id="draw-size" min="4" max="28" value="8" class="w-20 accent-fuchsia-600">
+            </div>
+          </div>
+
+          <button onclick="animateMyDrawing()" class="w-full mt-4 bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-600 hover:to-pink-600 text-white font-black py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base transition transform active:scale-95">
+            <span>🪄 Resmimi Canlandır ve Sahneye Koy! (+5 ⭐)</span>
+          </button>
+        </div>
+
+        <!-- Sağ: Tiyatro Sahnesi -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 border-4 border-pink-300 shadow-md flex flex-col justify-between">
+          <div>
+            <div class="w-full flex items-center justify-between mb-2">
+              <span class="font-black text-xs sm:text-sm text-pink-800 dark:text-pink-300">2. Canlı Tiyatro Sahnesi</span>
+              <div class="flex items-center gap-1 text-xs">
+                <span class="text-gray-500 font-bold">Sahne:</span>
+                <button onclick="setStageBg('forest')" class="px-2 py-0.5 bg-green-100 text-green-700 rounded-lg font-bold">Orman</button>
+                <button onclick="setStageBg('space')" class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-lg font-bold">Uzay</button>
+                <button onclick="setStageBg('city')" class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-lg font-bold">Şehir</button>
+              </div>
+            </div>
+
+            <!-- Sahne Kutusu -->
+            <div id="stage-box" class="w-full h-[320px] rounded-2xl relative overflow-hidden flex items-end justify-center bg-gradient-to-b from-sky-200 to-green-100 border-2 border-pink-200 shadow-inner">
+              <div id="character-actor-container" class="absolute bottom-6 flex flex-col items-center transition-transform">
+                <img id="character-actor-img" src="" alt="Canlı Karakter" class="max-h-44 max-w-44 object-contain filter drop-shadow-xl char-dance">
+                <div class="text-[10px] font-bold bg-white/80 dark:bg-slate-900/80 px-2 py-0.5 rounded-full shadow mt-1 text-gray-700 dark:text-gray-300">
+                  Benim Canlı Karakterim 🐥
+                </div>
+              </div>
+              <div id="stage-ground" class="w-full h-8 bg-green-500/80 border-t-4 border-green-600/90 z-0"></div>
+            </div>
+          </div>
+
+          <!-- Animasyon ve Hareket Butonları -->
+          <div class="mt-3 space-y-2">
+            <span class="text-xs font-black text-gray-600 dark:text-gray-300">Karaktere Hareket Yaptır:</span>
+            <div class="grid grid-cols-5 gap-1.5">
+              <button onclick="setActorMotion('char-dance')" class="bg-pink-100 hover:bg-pink-200 text-pink-800 text-xs font-bold py-2 rounded-xl">💃 Dans</button>
+              <button onclick="setActorMotion('char-jump')" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 text-xs font-bold py-2 rounded-xl">🦘 Zıpla</button>
+              <button onclick="setActorMotion('char-fly')" class="bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-bold py-2 rounded-xl">🚀 Uç</button>
+              <button onclick="setActorMotion('char-run')" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold py-2 rounded-xl">🏃 Koş</button>
+              <button onclick="setActorMotion('char-shake')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold py-2 rounded-xl">🎉 Coş</button>
+            </div>
+            <div class="flex items-center justify-center gap-3 pt-1">
+              <button onclick="moveActor(-30)" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-700 dark:text-gray-200 font-black px-4 py-1.5 rounded-xl text-xs">◀ Sola Kaydır</button>
+              <button onclick="moveActor(30)" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-700 dark:text-gray-200 font-black px-4 py-1.5 rounded-xl text-xs">Sağa Kaydır ▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. BOYAMA KİTABI EKRANI -->
+    <section id="coloring-screen" class="hidden space-y-4">
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border-2 border-emerald-300">
+        <button onclick="requestExitToLobby()" class="pulse-btn bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
+          🐥 CivCiv'e Dön
+        </button>
+        <h2 class="text-base sm:text-lg font-black text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+          <span>🖍️</span> CivCiv Sihirli Boyama Kitabı
+        </h2>
+        <div class="w-16"></div>
+      </div>
+
+      <!-- Kategori Butonları -->
+      <div class="flex flex-wrap items-center justify-center gap-2 bg-white/80 dark:bg-slate-900/80 p-2 rounded-2xl border border-emerald-200">
+        <button onclick="loadColoringCategory('sakir')" class="px-3 py-1.5 rounded-xl font-black text-xs bg-emerald-500 text-white shadow">🦁 Kral Şakir & Dostları</button>
+        <button onclick="loadColoringCategory('hayvan')" class="px-3 py-1.5 rounded-xl font-black text-xs bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-300 border hover:bg-emerald-50">🐾 Sevimli Hayvanlar</button>
+        <button onclick="loadColoringCategory('araba')" class="px-3 py-1.5 rounded-xl font-black text-xs bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-300 border hover:bg-emerald-50">🏎️ Hızlı Arabalar</button>
+        <button onclick="loadColoringCategory('disney')" class="px-3 py-1.5 rounded-xl font-black text-xs bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-300 border hover:bg-emerald-50">🏰 Disney Masal Kalesi</button>
+        <button onclick="loadColoringCategory('doga')" class="px-3 py-1.5 rounded-xl font-black text-xs bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-300 border hover:bg-emerald-50">🌲 Doğa & Manzara</button>
+      </div>
+
+      <!-- Boyama Tuvali & Araçlar -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 border-4 border-emerald-200 shadow-lg flex flex-col lg:flex-row items-center gap-6 justify-center">
+        <div class="relative bg-white border-4 border-dashed border-emerald-300 rounded-3xl overflow-hidden shadow-inner">
+          <canvas id="coloring-canvas" width="380" height="380" class="touch-none cursor-crosshair bg-white"></canvas>
+        </div>
+
+        <div class="w-full lg:w-72 space-y-4">
+          <div>
+            <span class="text-xs font-black text-gray-500 uppercase tracking-wider">Şablon Seç</span>
+            <div id="coloring-template-thumbs" class="grid grid-cols-2 gap-2 mt-1.5">
+              <!-- Dinamik şablon butonları -->
+            </div>
+          </div>
+
+          <div>
+            <span class="text-xs font-black text-gray-500 uppercase tracking-wider">Boya Paleti</span>
+            <div class="grid grid-cols-6 gap-2 mt-1.5" id="coloring-palette">
+              <!-- Renk butonları -->
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-gray-600 dark:text-gray-300">Fırça:</span>
+              <input type="range" id="brush-size" min="4" max="30" value="12" class="w-24 accent-emerald-600">
+            </div>
+            <button onclick="resetColoringTemplate()" class="text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold px-3 py-1.5 rounded-xl">
+              Sıfırla ↺
+            </button>
+          </div>
+
+          <button onclick="saveColoringImage()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2 text-sm transition">
+            <span>💾 Resmimi Cihaza İndir (+3 ⭐)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ARABA OYUNLARI EKRANI (OTOYOL & TEPE TIRMANMA) -->
+    <section id="car-game-screen" class="hidden space-y-3">
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border-2 border-sky-300">
+        <button onclick="requestExitToLobby()" class="pulse-btn bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
+          🐥 CivCiv'e Dön
+        </button>
+        <h2 id="car-game-header-title" class="text-base sm:text-lg font-black text-sky-700 dark:text-sky-300">CivCiv Otoyol Rallisi</h2>
+        <div class="flex items-center gap-3 text-xs sm:text-sm font-bold">
+          <span>Skor: <b id="car-game-score" class="text-sky-600 text-base">0</b></span>
+          <span>Benzin: <b id="car-game-fuel" class="text-emerald-600 text-base">100%</b></span>
+        </div>
+      </div>
+
+      <div class="relative w-full max-w-lg mx-auto bg-gray-900 rounded-3xl overflow-hidden border-4 border-sky-400 shadow-2xl flex flex-col items-center">
+        <canvas id="car-canvas" width="380" height="480" class="bg-gray-800 touch-none"></canvas>
+
+        <!-- Oyun Sonu Kartı -->
+        <div id="car-gameover-card" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center text-white p-6 text-center z-20">
+          <div class="text-6xl mb-2">💥</div>
+          <h3 class="text-2xl font-black text-rose-400 mb-1">Yarış Bitti!</h3>
+          <p id="car-gameover-msg" class="text-xs text-gray-300 font-semibold mb-3">Harika bir sürücüsün!</p>
+          <div class="text-xl font-black text-amber-300 mb-4">Toplam Skor: <span id="car-gameover-score">0</span></div>
+          <div class="flex gap-2">
+            <button onclick="restartCarGame()" class="bg-amber-500 hover:bg-amber-600 text-white font-black px-5 py-2.5 rounded-xl shadow">Tekrar Oyna 🏎️</button>
+            <button onclick="showScreen('lobby-screen')" class="bg-sky-500 hover:bg-sky-600 text-white font-black px-5 py-2.5 rounded-xl shadow">Ana Sayfa</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dokunmatik Kontroller -->
+      <div class="flex items-center justify-center gap-4 pt-1 max-w-lg mx-auto">
+        <button id="car-touch-left" class="flex-1 bg-white dark:bg-slate-800 border-4 border-sky-300 active:bg-sky-200 text-sky-800 dark:text-sky-200 rounded-2xl font-black text-xl py-3.5 shadow-lg flex items-center justify-center">
+          ◀ SOL
+        </button>
+        <button id="car-touch-gas" class="flex-1 bg-emerald-500 active:bg-emerald-600 text-white rounded-2xl font-black text-base py-3.5 shadow-lg flex items-center justify-center">
+          GAZ ⚡
+        </button>
+        <button id="car-touch-right" class="flex-1 bg-white dark:bg-slate-800 border-4 border-sky-300 active:bg-sky-200 text-sky-800 dark:text-sky-200 rounded-2xl font-black text-xl py-3.5 shadow-lg flex items-center justify-center">
+          SAĞ ▶
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. OYUN & 100 ZEKA GÖREVİ DÜNYASI -->
+    <section id="games-hub-screen" class="hidden space-y-4">
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border-2 border-indigo-300">
+        <button onclick="requestExitToLobby()" class="pulse-btn bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
+          🐥 CivCiv'e Dön
+        </button>
+        <h2 class="text-base sm:text-lg font-black text-indigo-700 dark:text-indigo-300">🎮 Oyun & Zeka Dünyası</h2>
+        <div class="w-16"></div>
+      </div>
+
+      <!-- Mini Arcade Kartları -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div onclick="startStarArcadeGame()" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-amber-300 text-center cursor-pointer shadow-sm">
+          <div class="text-4xl mb-1 chick-animate">⭐</div>
+          <h4 class="font-black text-amber-700 dark:text-amber-300 text-xs sm:text-sm">Yıldız Avcısı</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Mısır topla, bombadan kaç</span>
+        </div>
+        <div onclick="startMemoryGame()" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-purple-300 text-center cursor-pointer shadow-sm">
+          <div class="text-4xl mb-1">🧠</div>
+          <h4 class="font-black text-purple-700 dark:text-purple-300 text-xs sm:text-sm">Süper Hafıza</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Kart eşleştirme</span>
+        </div>
+        <div onclick="startMoleGame()" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-emerald-300 text-center cursor-pointer shadow-sm">
+          <div class="text-4xl mb-1">🐾</div>
+          <h4 class="font-black text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm">Bahçe Refleksi</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Köstebek yakala</span>
+        </div>
+        <div onclick="startHighwayCarGame()" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-sky-300 text-center cursor-pointer shadow-sm">
+          <div class="text-4xl mb-1">🏎️</div>
+          <h4 class="font-black text-sky-700 dark:text-sky-300 text-xs sm:text-sm">Hızlı Ralli</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Araba yarışı</span>
+        </div>
+      </div>
+
+      <!-- 100 Çocuk Gelişim Görevi Alanı -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border-4 border-indigo-200 dark:border-indigo-600 shadow-md">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-lg font-black text-indigo-800 dark:text-indigo-300 flex items-center gap-2">
+              <span>🧩</span> 100 Çocuk Gelişim & Zeka Görevi
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">
+              Tıkla, çöz, doğru cevabı pekiştir ve yıldız kazan!
+            </p>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs bg-indigo-50 dark:bg-slate-800 p-1.5 rounded-xl border border-indigo-200">
+            <button onclick="filterDevTasks('all')" class="px-2.5 py-1 rounded-lg font-bold bg-indigo-600 text-white">Tümü (100)</button>
+            <button onclick="filterDevTasks('mantik')" class="px-2.5 py-1 rounded-lg font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100">Mantık</button>
+            <button onclick="filterDevTasks('dikkat')" class="px-2.5 py-1 rounded-lg font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100">Dikkat</button>
+            <button onclick="filterDevTasks('sayisal')" class="px-2.5 py-1 rounded-lg font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100">Sayısal</button>
+          </div>
+        </div>
+
+        <div id="dev-tasks-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5 max-h-96 overflow-y-auto p-1">
+          <!-- 100 Görev kartı JS ile doldurulur -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. DERS ÇALIŞ & AÇIKLAMALI ÇÖZÜMLÜ SORU BANKASI -->
+    <section id="school-screen" class="hidden space-y-4">
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border-2 border-amber-300">
+        <button onclick="requestExitToLobby()" class="pulse-btn bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
+          🐥 CivCiv'e Dön
+        </button>
+        <h2 class="text-base sm:text-lg font-black text-amber-700 dark:text-amber-300">📚 Ders Dehası: Çözümlü Soru Bankası</h2>
+        <button onclick="openMistakesModal()" class="bg-rose-500 hover:bg-rose-600 text-white font-black px-3 py-1.5 rounded-xl text-xs shadow">
+          Yanlışlarım (<span id="school-mistakes-count">0</span>)
+        </button>
+      </div>
+
+      <!-- Ders Seçim Kartları -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div onclick="selectSubject('matematik')" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-blue-300 text-center cursor-pointer shadow-sm">
+          <div class="text-3xl mb-1">🔢</div>
+          <h4 class="font-black text-blue-700 dark:text-blue-300 text-xs sm:text-sm">Matematik</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Mantık & Sayılar</span>
+        </div>
+        <div onclick="selectSubject('turkce')" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-rose-300 text-center cursor-pointer shadow-sm">
+          <div class="text-3xl mb-1">📖</div>
+          <h4 class="font-black text-rose-700 dark:text-rose-300 text-xs sm:text-sm">Türkçe</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Okuma & Anlama</span>
+        </div>
+        <div onclick="selectSubject('fen')" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-emerald-300 text-center cursor-pointer shadow-sm">
+          <div class="text-3xl mb-1">🔬</div>
+          <h4 class="font-black text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm">Fen Bilimleri</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Doğa & Deney</span>
+        </div>
+        <div onclick="selectSubject('sosyal')" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-amber-300 text-center cursor-pointer shadow-sm">
+          <div class="text-3xl mb-1">🌍</div>
+          <h4 class="font-black text-amber-700 dark:text-amber-300 text-xs sm:text-sm">Sosyal Bilgiler</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Tarih & Yaşam</span>
+        </div>
+        <div onclick="selectSubject('ingilizce')" class="card-bounce bg-white dark:bg-slate-900 p-3.5 rounded-2xl border-2 border-purple-300 text-center cursor-pointer shadow-sm col-span-2 sm:col-span-1">
+          <div class="text-3xl mb-1">🇬🇧</div>
+          <h4 class="font-black text-purple-700 dark:text-purple-300 text-xs sm:text-sm">İngilizce</h4>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Words & Quiz</span>
+        </div>
+      </div>
+
+      <!-- Soru Çözme Paneli -->
+      <div id="quiz-runner-box" class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-7 border-4 border-amber-300 dark:border-indigo-500 shadow-xl max-w-2xl mx-auto space-y-4">
+        <div class="flex items-center justify-between border-b pb-3 dark:border-slate-800">
+          <span id="quiz-subject-badge" class="bg-amber-100 dark:bg-slate-800 text-amber-800 dark:text-amber-300 text-xs font-black px-3 py-1 rounded-full uppercase">
+            Matematik
+          </span>
+          <span id="quiz-progress-text" class="text-xs font-bold text-gray-500 dark:text-gray-400">
+            Soru 1 / 5
+          </span>
+        </div>
+
+        <div id="quiz-question-text" class="text-base sm:text-lg font-black text-gray-800 dark:text-gray-100 min-h-[55px] flex items-center">
+          Soru yükleniyor...
+        </div>
+
+        <!-- Şıklar -->
+        <div id="quiz-options-container" class="grid grid-cols-1 gap-2.5 pt-1">
+          <!-- A-B-C-D şıkları -->
+        </div>
+
+        <!-- Adım Adım Çözümlü Açıklama Kartı -->
+        <div id="quiz-solution-box" class="hidden bg-emerald-50 dark:bg-emerald-950/60 border-2 border-emerald-400 rounded-2xl p-4 space-y-1.5 animate-fadeIn">
+          <div class="flex items-center gap-2 text-emerald-900 dark:text-emerald-200 font-black text-sm">
+            <span>💡</span> CivCiv'in Adım Adım Çözümlü Anlatımı:
+          </div>
+          <p id="quiz-solution-text" class="text-xs sm:text-sm font-semibold text-emerald-950 dark:text-emerald-300 leading-relaxed"></p>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden bg-amber-500 hover:bg-amber-600 text-white font-black px-6 py-2.5 rounded-xl text-sm shadow">
+            Sonraki Soru ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. YILDIZ AVCISI CANVAS OYUNU -->
+    <section id="star-arcade-screen" class="hidden space-y-3">
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-2xl shadow-sm border-2 border-amber-300">
+        <button onclick="requestExitToLobby()" class="pulse-btn bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
+          🐥 CivCiv'e Dön
+        </button>
+        <h2 class="text-base sm:text-lg font-black text-amber-700 dark:text-amber-300">Yıldız Avcısı</h2>
+        <div class="text-sm font-bold text-gray-600 dark:text-gray-300">Puan: <b id="star-score-text" class="text-amber-600 text-base">0</b></div>
+      </div>
+
+      <div class="relative w-full max-w-lg mx-auto bg-amber-50 dark:bg-slate-800 rounded-3xl overflow-hidden border-4 border-amber-300 shadow-xl flex flex-col items-center p-2">
+        <canvas id="star-arcade-canvas" width="380" height="420" class="rounded-2xl touch-none"></canvas>
+      </div>
+
+      <div class="flex justify-center gap-6 pt-1 max-w-lg mx-auto">
+        <button id="star-left-btn" class="flex-1 bg-white dark:bg-slate-800 border-2 border-amber-300 rounded-2xl font-black text-xl text-amber-700 py-3 shadow">◀ SOL</button>
+        <button id="star-right-btn" class="flex-1 bg-white dark:bg-slate-800 border-2 border-amber-300 rounded-2xl font-black text-xl text-amber-700 py-3 shadow">SAĞ ▶</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== ALT BİLGİ / FOOTER ==================== -->
+  <footer class="max-w-6xl mx-auto w-full mt-8 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-xl border-4 border-amber-300 dark:border-indigo-500 text-center sm:text-left transition-colors duration-300">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b pb-4 border-amber-200 dark:border-slate-800">
+      
+      <!-- Sol: Marka & Slogan -->
+      <div class="space-y-1">
+        <div class="flex items-center justify-center sm:justify-start gap-2">
+          <span class="text-2xl">🐥</span>
+          <span class="text-lg font-black text-amber-700 dark:text-amber-400">CivCiv Dünyası</span>
+          <span class="text-[10px] bg-amber-500 text-white font-black px-2 py-0.5 rounded-full">Çocuk Portalı</span>
+        </div>
+        <p class="text-xs font-bold text-gray-600 dark:text-gray-300 italic">
+          "Ebeveynlerinin cicileri için sevgi ve özenle hazırlandı."
+        </p>
+      </div>
+
+      <!-- Sağ: Geliştirici & Konum Bilgileri -->
+      <div class="flex flex-col items-center sm:items-end text-xs font-bold text-gray-700 dark:text-gray-200 space-y-1">
+        <div class="flex items-center gap-1.5">
+          <span class="text-amber-600 dark:text-amber-400">👨‍💻 Hazırlayan:</span>
+          <span class="font-black text-gray-900 dark:text-white">Mehmet Hanifi Aksoylu</span>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-end">
+          <a href="mailto:mhanifiaksoylu@gmail.com" class="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 hover:underline font-black">
+            <span>✉️</span> mhanifiaksoylu@gmail.com
+          </a>
+          <span class="text-gray-400">•</span>
+          <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-black">
+            <span>📍</span> Gaziantep, Türkiye
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Alt Telif & Hızlı Künye Butonu -->
+    <div class="pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-bold text-gray-500 dark:text-gray-400">
+      <div>
+        © 2026 CivCiv™ - Tüm Hakları Saklıdır. Çocuk Gelişimi, Sanat ve Eğitimi İçin Tasarlanmıştır.
+      </div>
+      <button onclick="openDeveloperModal()" class="text-amber-700 dark:text-amber-300 hover:underline font-black flex items-center gap-1">
+        <span>ℹ️</span> Geliştirici Hakkında & İletişim Detayları
+      </button>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALLAR (Z-[9999] EN ÜST KATMAN) ==================== -->
+
+  <!-- 1. TEMA SEÇİCİ MODAL -->
+  <div id="theme-modal" class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4" onclick="if(event.target===this) closeThemeModal()">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border-4 border-amber-300 space-y-4 animate-fadeIn">
+      <div class="flex items-center justify-between border-b pb-3 dark:border-slate-800">
+        <h3 class="text-lg font-black text-gray-800 dark:text-white flex items-center gap-2">
+          <span>🎨</span> Renk Teması Seç
+        </h3>
+        <button onclick="closeThemeModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-white font-black flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2.5">
+        <button onclick="applyTheme('theme-civciv')" class="w-full p-3 rounded-2xl border-2 border-amber-400 bg-amber-50 hover:bg-amber-100 flex items-center justify-between font-bold text-amber-900 text-sm">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-amber-400 inline-block"></span> CivCiv Sarısı</span>
+          <span class="text-xs bg-amber-200 px-2 py-0.5 rounded-full">Klasik</span>
+        </button>
+        <button onclick="applyTheme('theme-mavi')" class="w-full p-3 rounded-2xl border-2 border-sky-400 bg-sky-50 hover:bg-sky-100 flex items-center justify-between font-bold text-sky-900 text-sm">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-sky-500 inline-block"></span> Gökyüzü Mavisi</span>
+          <span class="text-xs bg-sky-200 px-2 py-0.5 rounded-full">Ferah</span>
+        </button>
+        <button onclick="applyTheme('theme-yesil')" class="w-full p-3 rounded-2xl border-2 border-emerald-400 bg-emerald-50 hover:bg-emerald-100 flex items-center justify-between font-bold text-emerald-900 text-sm">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-emerald-500 inline-block"></span> Doğa Yeşili</span>
+          <span class="text-xs bg-emerald-200 px-2 py-0.5 rounded-full">Huzurlu</span>
+        </button>
+        <button onclick="applyTheme('theme-pembe')" class="w-full p-3 rounded-2xl border-2 border-pink-400 bg-pink-50 hover:bg-pink-100 flex items-center justify-between font-bold text-pink-900 text-sm">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-pink-500 inline-block"></span> Şeker Pembesi</span>
+          <span class="text-xs bg-pink-200 px-2 py-0.5 rounded-full">Tatlı</span>
+        </button>
+        <button onclick="applyTheme('theme-gece')" class="w-full p-3 rounded-2xl border-2 border-indigo-500 bg-slate-900 text-indigo-200 flex items-center justify-between font-bold text-sm">
+          <span class="flex items-center gap-2"><span>🌙</span> Gece / Uzay Modu</span>
+          <span class="text-xs bg-indigo-900 text-white px-2 py-0.5 rounded-full">Koyu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PROFİL MODALI -->
+  <div id="profile-modal" class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-amber-300 space-y-4 animate-fadeIn">
+      <div class="flex items-center justify-between border-b pb-3 dark:border-slate-800">
+        <h3 class="text-lg font-black text-gray-800 dark:text-white flex items-center gap-2">
+          <span>🐣</span> Çocuk Profili
+        </h3>
+        <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-white font-black flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase">Çocuğun Adı</label>
+          <input type="text" id="prof-name-input" class="w-full border-2 border-amber-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-2.5 font-bold text-gray-800 dark:text-white focus:outline-none focus:border-amber-500" placeholder="Örn: Zeynep">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase">Yaşı</label>
+            <select id="prof-age-select" class="w-full border-2 border-amber-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-2.5 font-bold text-gray-800 dark:text-white">
+              <option value="7">7 Yaşında</option>
+              <option value="8">8 Yaşında</option>
+              <option value="9" selected>9 Yaşında</option>
+              <option value="10">10 Yaşında</option>
+              <option value="11">11 Yaşında</option>
+              <option value="12">12 Yaşında</option>
+              <option value="13">13 Yaşında</option>
+              <option value="14">14 Yaşında</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase">Sınıfı</label>
+            <select id="prof-grade-select" class="w-full border-2 border-amber-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-2.5 font-bold text-gray-800 dark:text-white">
+              <option value="1">1. Sınıf</option>
+              <option value="2">2. Sınıf</option>
+              <option value="3" selected>3. Sınıf</option>
+              <option value="4">4. Sınıf</option>
+              <option value="5">5. Sınıf</option>
+              <option value="6">6. Sınıf</option>
+              <option value="7">7. Sınıf</option>
+              <option value="8">8. Sınıf</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase">Avatar Seç</label>
+          <div class="flex flex-wrap gap-2 pt-1" id="avatar-choices"></div>
+        </div>
+
+        <button onclick="saveUserProfile()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-3 rounded-2xl shadow-md transition">
+          Kaydet ve Uygula ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. TEKRAR HAVUZU MODALI -->
+  <div id="mistakes-modal" class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-rose-300 space-y-4 max-h-[85vh] flex flex-col animate-fadeIn">
+      <div class="flex items-center justify-between border-b pb-3 dark:border-slate-800">
+        <h3 class="text-lg font-black text-rose-700 dark:text-rose-400 flex items-center gap-2">
+          <span>📝</span> Tekrar Havuzum (Pekiştirme Soruları)
+        </h3>
+        <button onclick="closeMistakesModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-white font-black flex items-center justify-center">✕</button>
+      </div>
+
+      <div id="mistakes-list" class="flex-grow overflow-y-auto space-y-3 p-1"></div>
+
+      <div class="pt-2 border-t dark:border-slate-800 flex justify-between items-center">
+        <button onclick="clearMistakesPool()" class="text-xs font-black text-rose-600 hover:underline">Havuzu Temizle 🗑️</button>
+        <button onclick="closeMistakesModal()" class="bg-amber-500 text-white font-black px-4 py-2 rounded-xl text-xs shadow">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. GÜVENLİ ÇIKIŞ ONAY MODALI -->
+  <div id="exit-modal" class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xs w-full p-6 shadow-2xl text-center space-y-4 border-4 border-amber-300 animate-fadeIn">
+      <div class="text-5xl chick-animate">🐥</div>
+      <h3 class="text-lg font-black text-gray-800 dark:text-white">CivCiv'e Dönmek İster misin?</h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Tüm yıldızların ve skorun kaydedildi!</p>
+      <div class="flex gap-2">
+        <button onclick="cancelExit()" class="w-1/2 bg-gray-200 dark:bg-slate-800 text-gray-800 dark:text-white font-black py-2.5 rounded-xl text-xs">Devam Et</button>
+        <button onclick="confirmExit()" class="w-1/2 bg-amber-500 hover:bg-amber-600 text-white font-black py-2.5 rounded-xl text-xs shadow">Evet, Dön</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. GELİŞTİRİCİ & İLETİŞİM MODALI -->
+  <div id="developer-modal" class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4" onclick="if(event.target===this) closeDeveloperModal()">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-amber-400 space-y-4 animate-fadeIn">
+      <div class="flex items-center justify-between border-b pb-3 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">👨‍💻</span>
+          <h3 class="text-lg font-black text-gray-800 dark:text-white">Geliştirici & İletişim</h3>
+        </div>
+        <button onclick="closeDeveloperModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-white font-black flex items-center justify-center">✕</button>
+      </div>
+
+      <!-- Bilgi Kartı -->
+      <div class="bg-amber-50 dark:bg-slate-800/80 border-2 border-amber-200 dark:border-slate-700 rounded-2xl p-4 text-center space-y-2">
+        <div class="w-16 h-16 bg-gradient-to-tr from-amber-400 to-orange-400 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-md border-2 border-amber-200">
+          🐣
+        </div>
+        <h4 class="text-base font-black text-gray-900 dark:text-white">Mehmet Hanifi Aksoylu</h4>
+        <p class="text-xs font-bold text-amber-700 dark:text-amber-300">
+          Yazılım Geliştirici & Çocuk Eğitimi Tasarımcısı
+        </p>
+        <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 pt-1 leading-relaxed">
+          CivCiv; ilkokul ve ortaokul çağındaki çocuklarımızın eğlenirken zihinsel becerilerini, sanatsal üretkenliklerini ve ders başarılarını artırmak amacıyla sevgiyle geliştirilmiştir.
+        </p>
+      </div>
+
+      <!-- İletişim Detayları -->
+      <div class="space-y-2 text-xs font-bold">
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+          <span class="text-gray-500 dark:text-gray-400">📧 E-Posta:</span>
+          <a href="mailto:mhanifiaksoylu@gmail.com" class="text-sky-600 dark:text-sky-400 hover:underline font-black">
+            mhanifiaksoylu@gmail.com
+          </a>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+          <span class="text-gray-500 dark:text-gray-400">📍 Konum / Şehir:</span>
+          <span class="text-emerald-700 dark:text-emerald-400 font-black">Gaziantep, Türkiye</span>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+          <span class="text-gray-500 dark:text-gray-400">✨ Proje Amacı:</span>
+          <span class="text-amber-700 dark:text-amber-400 font-black">Ebeveynlerinin Cicileri İçin</span>
+        </div>
+      </div>
+
+      <!-- Mail Gönder Butonu -->
+      <div class="pt-1 flex gap-2">
+        <a href="mailto:mhanifiaksoylu@gmail.com" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-black py-2.5 rounded-xl text-xs text-center shadow transition flex items-center justify-center gap-1.5">
+          <span>✉️</span> Doğrudan Mesaj Gönder
+        </a>
+        <button onclick="closeDeveloperModal()" class="bg-gray-200 dark:bg-slate-800 text-gray-800 dark:text-white font-black px-4 py-2.5 rounded-xl text-xs">
+          Kapat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    /* 1. SES MOTORU (Web Audio API) */
+    const AudioEngine = {
+      ctx: null,
+      enabled: true,
+      init() {
+        if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      },
+      playTone(freq, type, duration, gainVal = 0.1) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      btnClick() { this.playTone(450, 'sine', 0.07, 0.08); },
+      star() {
+        this.playTone(523, 'sine', 0.1, 0.1);
+        setTimeout(() => this.playTone(659, 'sine', 0.1, 0.1), 70);
+        setTimeout(() => this.playTone(784, 'triangle', 0.18, 0.12), 140);
+      },
+      wrong() {
+        this.playTone(240, 'sawtooth', 0.15, 0.1);
+        setTimeout(() => this.playTone(180, 'sawtooth', 0.22, 0.1), 100);
+      },
+      crash() { this.playTone(130, 'square', 0.25, 0.15); }
+    };
+
+    function toggleSound() {
+      AudioEngine.enabled = !AudioEngine.enabled;
+      document.getElementById('sound-btn').textContent = AudioEngine.enabled ? '🔊' : '🔇';
+      if (AudioEngine.enabled) AudioEngine.btnClick();
+    }
+
+    /* 2. UYGULAMA DURUMU & LOCALSTORAGE */
+    let State = {
+      stars: 45,
+      profile: { name: 'Cici Ali', age: 9, grade: 3, avatar: '🐥' },
+      theme: 'theme-civciv',
+      mistakes: [
+        {
+          id: 1,
+          subject: 'Matematik',
+          q: '7 x 8 işleminin sonucu kaçtır?',
+          ans: '56',
+          explanation: 'Çarpım tablosunda 7 tane 8, 56 eder (7 x 8 = 56).'
+        }
+      ]
+    };
+
+    function loadSavedData() {
+      const saved = localStorage.getItem('civciv_full_app_state');
+      if (saved) {
+        try { State = JSON.parse(saved); } catch(e) {}
+      }
+      updateUI();
+    }
+
+    function saveData() {
+      localStorage.setItem('civciv_full_app_state', JSON.stringify(State));
+      updateUI();
+    }
+
+    function addStars(num) {
+      State.stars += num;
+      AudioEngine.star();
+      if (typeof confetti === 'function') confetti({ particleCount: 25, spread: 45, origin: { y: 0.7 } });
+      saveData();
+    }
+
+    function updateUI() {
+      document.getElementById('header-stars-display').textContent = State.stars;
+      document.getElementById('header-name').textContent = State.profile.name;
+      document.getElementById('header-grade').textContent = `${State.profile.grade}. Sınıf`;
+      document.getElementById('header-avatar').textContent = State.profile.avatar;
+      document.getElementById('lobby-welcome-name').textContent = State.profile.name;
+      document.getElementById('header-mistakes-badge').textContent = State.mistakes.length;
+      document.getElementById('school-mistakes-count').textContent = State.mistakes.length;
+      document.body.className = `${State.theme} flex flex-col justify-between p-2 sm:p-4 transition-colors duration-300`;
+    }
+
+    /* 3. EKRAN GEÇİŞLERİ */
+    const screenIds = ['lobby-screen', 'animator-screen', 'coloring-screen', 'car-game-screen', 'games-hub-screen', 'school-screen', 'star-arcade-screen'];
+
+    function showScreen(id) {
+      AudioEngine.btnClick();
+      stopAllRunningLoops();
+      screenIds.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add('hidden');
+      });
+      const target = document.getElementById(id);
+      if (target) target.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (id === 'animator-screen') initDrawCanvas();
+      if (id === 'coloring-screen') initColoringBook();
+    }
+
+    function requestExitToLobby() {
+      AudioEngine.btnClick();
+      document.getElementById('exit-modal').classList.remove('hidden');
+    }
+    function cancelExit() {
+      document.getElementById('exit-modal').classList.add('hidden');
+    }
+    function confirmExit() {
+      document.getElementById('exit-modal').classList.add('hidden');
+      stopAllRunningLoops();
+      showScreen('lobby-screen');
+    }
+
+    function stopAllRunningLoops() {
+      stopCarLoop();
+      stopStarArcadeLoop();
+    }
+
+    /* 4. MODALLAR: TEMA & PROFİL */
+    function openThemeModal() {
+      AudioEngine.btnClick();
+      document.getElementById('theme-modal').classList.remove('hidden');
+    }
+    function closeThemeModal() {
+      document.getElementById('theme-modal').classList.add('hidden');
+    }
+    function applyTheme(th) {
+      State.theme = th;
+      saveData();
+      closeThemeModal();
+      AudioEngine.star();
+    }
+
+    const AVATARS = ['🐥', '🦁', '🚀', '🐱', '🦄', '🦖', '🤖', '🐼', '🦊', '🏎️', '⭐', '🎈'];
+    function openProfileModal() {
+      AudioEngine.btnClick();
+      document.getElementById('prof-name-input').value = State.profile.name;
+      document.getElementById('prof-age-select').value = State.profile.age;
+      document.getElementById('prof-grade-select').value = State.profile.grade;
+
+      const container = document.getElementById('avatar-choices');
+      container.innerHTML = '';
+      AVATARS.forEach(av => {
+        const btn = document.createElement('button');
+        btn.className = `text-2xl p-2 rounded-xl border-2 transition ${State.profile.avatar === av ? 'border-amber-500 bg-amber-100 dark:bg-amber-950' : 'border-gray-200 dark:border-slate-700'}`;
+        btn.textContent = av;
+        btn.onclick = () => {
+          State.profile.avatar = av;
+          openProfileModal();
+        };
+        container.appendChild(btn);
+      });
+
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+    function saveUserProfile() {
+      State.profile.name = document.getElementById('prof-name-input').value.trim() || 'Cici Ali';
+      State.profile.age = parseInt(document.getElementById('prof-age-select').value);
+      State.profile.grade = parseInt(document.getElementById('prof-grade-select').value);
+      saveData();
+      closeProfileModal();
+      AudioEngine.star();
+    }
+
+    /* 5. SİHİRLİ ÇİZİM VE CANLANDIRMA ATÖLYESİ */
+    let drawCanvas, drawCtx, isPainting = false;
+    let currentColor = '#1e293b', currentLineWidth = 8;
+    let actorShiftX = 0;
+
+    function initDrawCanvas() {
+      drawCanvas = document.getElementById('draw-canvas');
+      drawCtx = drawCanvas.getContext('2d');
+      drawCtx.lineCap = 'round';
+      drawCtx.lineJoin = 'round';
+
+      clearDrawCanvas();
+      drawSampleCreature();
+
+      drawCanvas.onmousedown = (e) => startPaint(e);
+      window.onmouseup = () => stopPaint();
+      drawCanvas.onmousemove = (e) => painting(e);
+
+      drawCanvas.ontouchstart = (e) => { e.preventDefault(); startPaint(e.touches[0]); };
+      window.ontouchend = () => stopPaint();
+      drawCanvas.ontouchmove = (e) => { e.preventDefault(); painting(e.touches[0]); };
+
+      document.getElementById('draw-size').oninput = (e) => currentLineWidth = e.target.value;
+    }
+
+    function startPaint(e) {
+      isPainting = true;
+      const rect = drawCanvas.getBoundingClientRect();
+      drawCtx.beginPath();
+      drawCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+    function stopPaint() { isPainting = false; }
+    function painting(e) {
+      if (!isPainting) return;
+      const rect = drawCanvas.getBoundingClientRect();
+      drawCtx.strokeStyle = currentColor;
+      drawCtx.lineWidth = currentLineWidth;
+      drawCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      drawCtx.stroke();
+    }
+    function setDrawColor(c) { currentColor = c; }
+    function clearDrawCanvas() {
+      drawCtx.fillStyle = '#ffffff';
+      drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+    }
+
+    function drawSampleCreature() {
+      drawCtx.lineWidth = 6;
+      drawCtx.strokeStyle = '#f59e0b';
+      drawCtx.beginPath();
+      drawCtx.arc(170, 170, 65, 0, Math.PI * 2);
+      drawCtx.stroke();
+      drawCtx.fillStyle = '#fbbf24';
+      drawCtx.fill();
+
+      // Gözler
+      drawCtx.fillStyle = '#1e293b';
+      drawCtx.beginPath();
+      drawCtx.arc(145, 155, 8, 0, Math.PI * 2);
+      drawCtx.arc(195, 155, 8, 0, Math.PI * 2);
+      drawCtx.fill();
+
+      // Gaga
+      drawCtx.fillStyle = '#f97316';
+      drawCtx.beginPath();
+      drawCtx.moveTo(170, 165);
+      drawCtx.lineTo(158, 185);
+      drawCtx.lineTo(182, 185);
+      drawCtx.closePath();
+      drawCtx.fill();
+    }
+
+    function animateMyDrawing() {
+      AudioEngine.star();
+      // Çizimdeki beyaz alanları transparan yap
+      const imgData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] > 235 && data[i+1] > 235 && data[i+2] > 235) {
+          data[i+3] = 0;
+        }
+      }
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = drawCanvas.width;
+      tempCanvas.height = drawCanvas.height;
+      tempCanvas.getContext('2d').putImageData(imgData, 0, 0);
+
+      const actorImg = document.getElementById('character-actor-img');
+      actorImg.src = tempCanvas.toDataURL();
+      setActorMotion('char-dance');
+      addStars(5);
+    }
+
+    function setActorMotion(animClass) {
+      AudioEngine.btnClick();
+      const actorImg = document.getElementById('character-actor-img');
+      actorImg.className = `max-h-44 max-w-44 object-contain filter drop-shadow-xl ${animClass}`;
+    }
+
+    function moveActor(offset) {
+      actorShiftX += offset;
+      document.getElementById('character-actor-container').style.transform = `translateX(${actorShiftX}px)`;
+    }
+
+    function setStageBg(type) {
+      const stage = document.getElementById('stage-box');
+      const ground = document.getElementById('stage-ground');
+      if (type === 'forest') {
+        stage.className = 'w-full h-[320px] rounded-2xl relative overflow-hidden flex items-end justify-center bg-gradient-to-b from-sky-300 via-sky-100 to-emerald-200 border-2 border-pink-200 shadow-inner';
+        ground.className = 'w-full h-8 bg-emerald-600 border-t-4 border-emerald-700 z-0';
+      } else if (type === 'space') {
+        stage.className = 'w-full h-[320px] rounded-2xl relative overflow-hidden flex items-end justify-center bg-gradient-to-b from-slate-950 via-indigo-950 to-purple-950 border-2 border-pink-200 shadow-inner';
+        ground.className = 'w-full h-8 bg-indigo-900 border-t-4 border-indigo-700 z-0';
+      } else {
+        stage.className = 'w-full h-[320px] rounded-2xl relative overflow-hidden flex items-end justify-center bg-gradient-to-b from-blue-300 to-amber-100 border-2 border-pink-200 shadow-inner';
+        ground.className = 'w-full h-8 bg-slate-600 border-t-4 border-slate-700 z-0';
+      }
+    }
+
+    /* 6. BOYAMA KİTABI */
+    let colorCanvas, colorCtx, currentColoringColor = '#ef4444';
+    const COLOR_PALETTE = ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899', '#854d0e', '#000000', '#ffffff'];
+
+    const COLORING_DATA = {
+      sakir: [
+        { name: 'Kral Şakir', draw: (ctx) => {
+          ctx.lineWidth = 4; ctx.strokeStyle = '#000000';
+          ctx.strokeRect(120, 90, 140, 130);
+          ctx.beginPath(); ctx.arc(160, 140, 18, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(220, 140, 18, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(190, 175, 12, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeRect(140, 220, 100, 110);
+        }},
+        { name: 'Fil Necati', draw: (ctx) => {
+          ctx.lineWidth = 4; ctx.strokeStyle = '#000000';
+          ctx.beginPath(); ctx.arc(190, 160, 75, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeRect(175, 180, 30, 80);
+          ctx.beginPath(); ctx.arc(120, 150, 35, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(260, 150, 35, 0, Math.PI*2); ctx.stroke();
+        }}
+      ],
+      hayvan: [
+        { name: 'Sevimli Civciv', draw: (ctx) => {
+          ctx.lineWidth = 4; ctx.strokeStyle = '#000';
+          ctx.beginPath(); ctx.arc(190, 140, 50, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(190, 230, 70, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeRect(175, 300, 10, 30); ctx.strokeRect(195, 300, 10, 30);
+        }}
+      ],
+      araba: [
+        { name: 'Yarış Arabası', draw: (ctx) => {
+          ctx.lineWidth = 4; ctx.strokeStyle = '#000';
+          ctx.beginPath();
+          ctx.moveTo(60, 240); ctx.lineTo(110, 190); ctx.lineTo(250, 190); ctx.lineTo(320, 240); ctx.closePath();
+          ctx.stroke();
+          ctx.beginPath(); ctx.arc(110, 250, 22, 0, Math.PI*2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(270, 250, 22, 0, Math.PI*2); ctx.stroke();
+        }}
+      ],
+      disney: [
+        { name: 'Masal Kalesi', draw: (ctx) => {
+          ctx.lineWidth = 4; ctx.strokeStyle = '#000';
+          ctx.strokeRect(90, 160, 50, 130); ctx.strokeRect(240, 160, 50, 130);
+          ctx.strokeRect(140, 200, 100, 90);
+          ctx.beginPath(); ctx.arc(190, 260, 22, Math.PI, 0); ctx.stroke();
+        }}
+      ],
+      doga: [
+        { name: 'Güneş & Ağaç', draw: (ctx) => {
+          ctx.lineWidth = 4; ctx.strokeStyle = '#000';
+          ctx.beginPath(); ctx.arc(80, 80, 35, 0, Math.PI*2); ctx.stroke();
+          ctx.strokeRect(175, 230, 30, 90);
+          ctx.beginPath(); ctx.arc(190, 170, 65, 0, Math.PI*2); ctx.stroke();
+        }}
+      ]
+    };
+
+    let activeColoringCat = 'sakir';
+    let activeColoringIdx = 0;
+    let isColoring = false;
+
+    function initColoringBook() {
+      colorCanvas = document.getElementById('coloring-canvas');
+      colorCtx = colorCanvas.getContext('2d');
+      colorCtx.lineCap = 'round';
+      colorCtx.lineJoin = 'round';
+
+      const pal = document.getElementById('coloring-palette');
+      pal.innerHTML = '';
+      COLOR_PALETTE.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'w-7 h-7 rounded-full border-2 border-white shadow';
+        btn.style.backgroundColor = c;
+        btn.onclick = () => currentColoringColor = c;
+        pal.appendChild(btn);
+      });
+
+      loadColoringCategory('sakir');
+
+      colorCanvas.onmousedown = (e) => startColor(e);
+      window.onmouseup = () => isColoring = false;
+      colorCanvas.onmousemove = (e) => coloring(e);
+
+      colorCanvas.ontouchstart = (e) => { e.preventDefault(); startColor(e.touches[0]); };
+      window.ontouchend = () => isColoring = false;
+      colorCanvas.ontouchmove = (e) => { e.preventDefault(); coloring(e.touches[0]); };
+    }
+
+    function startColor(e) {
+      isColoring = true;
+      const rect = colorCanvas.getBoundingClientRect();
+      colorCtx.beginPath();
+      colorCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+    function coloring(e) {
+      if (!isColoring) return;
+      const rect = colorCanvas.getBoundingClientRect();
+      colorCtx.strokeStyle = currentColoringColor;
+      colorCtx.lineWidth = document.getElementById('brush-size').value;
+      colorCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      colorCtx.stroke();
+    }
+
+    function loadColoringCategory(cat) {
+      activeColoringCat = cat;
+      const thumbs = document.getElementById('coloring-template-thumbs');
+      thumbs.innerHTML = '';
+      const list = COLORING_DATA[cat] || [];
+      list.forEach((tmpl, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'bg-emerald-50 dark:bg-slate-800 border border-emerald-300 p-2 rounded-xl text-xs font-black text-emerald-800 dark:text-emerald-300';
+        btn.textContent = tmpl.name;
+        btn.onclick = () => {
+          activeColoringIdx = idx;
+          resetColoringTemplate();
+        };
+        thumbs.appendChild(btn);
+      });
+      activeColoringIdx = 0;
+      resetColoringTemplate();
+    }
+
+    function resetColoringTemplate() {
+      colorCtx.fillStyle = '#ffffff';
+      colorCtx.fillRect(0, 0, colorCanvas.width, colorCanvas.height);
+      const list = COLORING_DATA[activeColoringCat];
+      if (list && list[activeColoringIdx]) {
+        list[activeColoringIdx].draw(colorCtx);
+      }
+    }
+
+    function saveColoringImage() {
+      const a = document.createElement('a');
+      a.download = 'civciv-boyama.png';
+      a.href = colorCanvas.toDataURL();
+      a.click();
+      addStars(3);
+    }
+
+    /* 7. ARABA OYUNLARI (OTOYOL & TEPE TIRMANMA) */
+    let carCanvas, carCtx, carAnimId = null;
+    let carGameMode = 'highway'; // 'highway' veya 'hill'
+    let carData = {
+      x: 170, y: 380, speed: 4, score: 0, fuel: 100,
+      traffic: [], items: [], left: false, right: false, gas: false
+    };
+
+    function startHighwayCarGame() {
+      carGameMode = 'highway';
+      document.getElementById('car-game-header-title').textContent = 'CivCiv Otoyol Rallisi';
+      launchCarGameEngine();
+    }
+    function startHillClimbGame() {
+      carGameMode = 'hill';
+      document.getElementById('car-game-header-title').textContent = 'CivCiv Tepe Tırmanma Off-Road';
+      launchCarGameEngine();
+    }
+
+    function launchCarGameEngine() {
+      showScreen('car-game-screen');
+      carCanvas = document.getElementById('car-canvas');
+      carCtx = carCanvas.getContext('2d');
+      document.getElementById('car-gameover-card').classList.add('hidden');
+
+      carData = {
+        x: 170, y: 390, speed: 4, score: 0, fuel: 100,
+        traffic: [], items: [], left: false, right: false, gas: false
+      };
+
+      // Klavye
+      window.onkeydown = (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'a') carData.left = true;
+        if (e.key === 'ArrowRight' || e.key === 'd') carData.right = true;
+        if (e.key === 'ArrowUp' || e.key === 'w') carData.gas = true;
+      };
+      window.onkeyup = (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'a') carData.left = false;
+        if (e.key === 'ArrowRight' || e.key === 'd') carData.right = false;
+        if (e.key === 'ArrowUp' || e.key === 'w') carData.gas = false;
+      };
+
+      // Dokunmatik
+      const bL = document.getElementById('car-touch-left');
+      const bR = document.getElementById('car-touch-right');
+      const bG = document.getElementById('car-touch-gas');
+      bL.ontouchstart = () => carData.left = true;
+      bL.ontouchend = () => carData.left = false;
+      bR.ontouchstart = () => carData.right = true;
+      bR.ontouchend = () => carData.right = false;
+      bG.ontouchstart = () => carData.gas = true;
+      bG.ontouchend = () => carData.gas = false;
+
+      stopCarLoop();
+      carLoop();
+    }
+
+    function stopCarLoop() {
+      if (carAnimId) cancelAnimationFrame(carAnimId);
+      carAnimId = null;
+    }
+    function restartCarGame() {
+      launchCarGameEngine();
+    }
+
+    let roadStripeOffset = 0;
+    function carLoop() {
+      const spd = carData.gas ? carData.speed * 1.5 : carData.speed;
+      roadStripeOffset = (roadStripeOffset + spd) % 40;
+
+      if (carData.left && carData.x > 60) carData.x -= 4.5;
+      if (carData.right && carData.x < 280) carData.x += 4.5;
+
+      carData.fuel -= 0.04;
+      carData.score += Math.floor(spd * 0.25);
+
+      // Trafik & Benzin
+      if (Math.random() < 0.025) {
+        carData.traffic.push({
+          x: [75, 170, 260][Math.floor(Math.random() * 3)],
+          y: -70,
+          color: ['#ef4444', '#3b82f6', '#10b981'][Math.floor(Math.random() * 3)]
+        });
+      }
+      if (Math.random() < 0.015) {
+        carData.items.push({
+          x: [80, 175, 265][Math.floor(Math.random() * 3)],
+          y: -50,
+          type: Math.random() < 0.6 ? 'fuel' : 'star'
+        });
+      }
+
+      // Trafik Hareketi & Çarpışma
+      for (let i = carData.traffic.length - 1; i >= 0; i--) {
+        const c = carData.traffic[i];
+        c.y += spd * 0.7;
+        if (Math.abs(c.x - carData.x) < 35 && Math.abs(c.y - carData.y) < 60) {
+          endCarGame('Başka bir arabaya çarptın! Dikkatli sür.');
+          return;
+        }
+        if (c.y > 520) carData.traffic.splice(i, 1);
+      }
+
+      // Eşyalar
+      for (let i = carData.items.length - 1; i >= 0; i--) {
+        const it = carData.items[i];
+        it.y += spd * 0.8;
+        if (Math.abs(it.x - carData.x) < 38 && Math.abs(it.y - carData.y) < 45) {
+          if (it.type === 'fuel') {
+            carData.fuel = Math.min(100, carData.fuel + 25);
+            AudioEngine.star();
+          } else {
+            addStars(1);
+          }
+          carData.items.splice(i, 1);
+          continue;
+        }
+        if (it.y > 520) carData.items.splice(i, 1);
+      }
+
+      if (carData.fuel <= 0) {
+        endCarGame('Benzinin bitti! Benzin bidonlarını toplamayı unutma.');
+        return;
+      }
+
+      // Çizim
+      renderCarFrame(spd);
+      document.getElementById('car-game-score').textContent = carData.score;
+      document.getElementById('car-game-fuel').textContent = Math.floor(carData.fuel) + '%';
+
+      carAnimId = requestAnimationFrame(carLoop);
+    }
+
+    function renderCarFrame(spd) {
+      carCtx.fillStyle = '#334155';
+      carCtx.fillRect(0, 0, carCanvas.width, carCanvas.height);
+
+      // Kenar Çimler
+      carCtx.fillStyle = '#10b981';
+      carCtx.fillRect(0, 0, 45, carCanvas.height);
+      carCtx.fillRect(335, 0, 45, carCanvas.height);
+
+      // Yol Şeritleri
+      carCtx.strokeStyle = '#f8fafc';
+      carCtx.lineWidth = 5;
+      carCtx.setLineDash([20, 20]);
+      carCtx.lineDashOffset = -roadStripeOffset;
+      carCtx.beginPath();
+      carCtx.moveTo(140, 0); carCtx.lineTo(140, carCanvas.height);
+      carCtx.moveTo(240, 0); carCtx.lineTo(240, carCanvas.height);
+      carCtx.stroke();
+      carCtx.setLineDash([]);
+
+      // Trafikteki Araçlar
+      carData.traffic.forEach(c => {
+        carCtx.fillStyle = c.color;
+        carCtx.fillRect(c.x, c.y, 38, 65);
+        carCtx.fillStyle = '#fef08a';
+        carCtx.fillRect(c.x + 4, c.y + 55, 6, 4);
+        carCtx.fillRect(c.x + 28, c.y + 55, 6, 4);
+      });
+
+      // İtemler
+      carData.items.forEach(it => {
+        carCtx.font = '24px sans-serif';
+        carCtx.fillText(it.type === 'fuel' ? '⛽' : '⭐', it.x, it.y + 20);
+      });
+
+      // CivCiv'in Arabası
+      carCtx.fillStyle = '#f59e0b';
+      carCtx.fillRect(carData.x, carData.y, 40, 70);
+      carCtx.fillStyle = '#38bdf8';
+      carCtx.fillRect(carData.x + 6, carData.y + 16, 28, 20);
+      carCtx.fillStyle = '#1e293b';
+      carCtx.fillRect(carData.x - 4, carData.y + 8, 5, 12);
+      carCtx.fillRect(carData.x + 39, carData.y + 8, 5, 12);
+      carCtx.fillRect(carData.x - 4, carData.y + 46, 5, 12);
+      carCtx.fillRect(carData.x + 39, carData.y + 46, 5, 12);
+
+      // CivCiv Sürücü
+      carCtx.font = '18px sans-serif';
+      carCtx.fillText('🐥', carData.x + 11, carData.y + 32);
+    }
+
+    function endCarGame(msg) {
+      stopCarLoop();
+      AudioEngine.crash();
+      document.getElementById('car-gameover-msg').textContent = msg;
+      document.getElementById('car-gameover-score').textContent = carData.score;
+      document.getElementById('car-gameover-card').classList.remove('hidden');
+    }
+
+    /* 8. 100 ÇOCUK GELİŞİM GÖREVİ */
+    const DEV_TASKS = [];
+    function build100Tasks() {
+      const categories = ['mantik', 'dikkat', 'sayisal'];
+      for (let i = 1; i <= 100; i++) {
+        const cat = categories[(i - 1) % 3];
+        let q, opt, ans, exp;
+        if (cat === 'mantik') {
+          const start = (i * 2) % 10 + 2;
+          const step = (i % 3) + 2;
+          q = `Örüntüyü tamamla: ${start}, ${start + step}, ${start + step * 2}, ?`;
+          ans = 1;
+          const nextVal = start + step * 3;
+          opt = [`${nextVal - 2}`, `${nextVal}`, `${nextVal + 1}`, `${nextVal + 3}`];
+          exp = `Sayılar ${step}'şer ${step}'şer artmaktadır. Sonraki sayı: ${nextVal}.`;
+        } else if (cat === 'dikkat') {
+          const fruits = ['Elma', 'Armut', 'Muz', 'Çilek'];
+          const nonFruit = ['Havuç', 'Brokoli', 'Patates', 'Soğan'][i % 4];
+          q = `Hangisi diğerlerinden farklıdır (meyve değildir)?`;
+          opt = [fruits[0], nonFruit, fruits[1], fruits[2]];
+          ans = 1;
+          exp = `${nonFruit} bir sebzedir, diğer seçenekler ise meyvedir.`;
+        } else {
+          const n1 = (i * 4) % 25 + 5;
+          const n2 = (i * 3) % 15 + 3;
+          q = `${n1} + ${n2} işleminin sonucu kaçtır?`;
+          ans = 1;
+          opt = [`${n1+n2-2}`, `${n1+n2}`, `${n1+n2+3}`, `${n1+n2+1}`];
+          exp = `Zihinden toplama: ${n1} + ${n2} = ${n1+n2} eder.`;
+        }
+
+        DEV_TASKS.push({
+          id: i,
+          cat: cat,
+          title: `Görev #${i}`,
+          q: q,
+          opt: opt,
+          a: ans,
+          exp: exp
+        });
+      }
+    }
+    build100Tasks();
+
+    function renderDevTasks(filter = 'all') {
+      const grid = document.getElementById('dev-tasks-grid');
+      grid.innerHTML = '';
+      const list = filter === 'all' ? DEV_TASKS : DEV_TASKS.filter(t => t.cat === filter);
+
+      list.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'bg-indigo-50 dark:bg-slate-800 border-2 border-indigo-200 dark:border-indigo-700 hover:border-indigo-400 p-2.5 rounded-xl text-center cursor-pointer card-bounce';
+        item.innerHTML = `
+          <div class="text-xs font-black text-indigo-700 dark:text-indigo-300">#${t.id}</div>
+          <div class="text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">${t.title}</div>
+          <div class="text-[10px] text-emerald-600 font-extrabold mt-1">+2 ⭐</div>
+        `;
+        item.onclick = () => {
+          loadSingleQuizDirect({
+            subject: 'Zeka Görevi',
+            q: t.q,
+            options: t.opt,
+            answer: t.a,
+            explanation: t.exp
+          });
+          showScreen('school-screen');
+        };
+        grid.appendChild(item);
+      });
+    }
+    function filterDevTasks(f) { renderDevTasks(f); }
+
+    /* 9. DERS ÇALIŞ & AÇIKLAMALI ÇÖZÜMLÜ SORU BANKASI */
+    const SUBJECT_QUESTIONS = {
+      matematik: [
+        { q: "Bir çiftlikte 4 inek ve 3 tavuk vardır. Toplam kaç ayak vardır?", options: ["18", "22", "24", "14"], answer: 1, explanation: "4 inek × 4 ayak = 16 ayak. 3 tavuk × 2 ayak = 6 ayak. Toplam: 16 + 6 = 22 ayak eder." },
+        { q: "CivCiv her gün 6 sayfa hikaye okuyor. 5 günde kaç sayfa okur?", options: ["25", "30", "35", "40"], answer: 1, explanation: "Çarpma işlemi: 5 gün × 6 sayfa = 30 sayfa kitap okur." },
+        { q: "Hangi sayının 12 fazlası 35 eder?", options: ["21", "23", "25", "27"], answer: 1, explanation: "Ters işlem: 35 - 12 = 23 buluruz." }
+      ],
+      turkce: [
+        { q: "'Cesur' kelimesinin zıt (karşıt) anlamlısı hangisidir?", options: ["Korkak", "Güçlü", "Hızlı", "Neşeli"], answer: 0, explanation: "Cesur bir kişinin zıttı korkak kişidir." },
+        { q: "Aşağıdaki kelimelerden hangisi hecelerine DOĞRU ayrılmıştır?", options: ["Ci-vc-iv", "Civ-civ", "C-iv-civ", "Civc-iv"], answer: 1, explanation: "Civ-civ şeklinde 2 heceye doğru olarak ayrılır." }
+      ],
+      fen: [
+        { q: "Bitkilerin yeşil yapraklarıyla güneş ışığında besin üretmesine ne denir?", options: ["Solunum", "Fotosentez", "Buharlaşma", "Çimlenme"], answer: 1, explanation: "Klorofil pigmenti ve güneş ışığı ile besin yapma olayına fotosentez denir." },
+        { q: "Dünyamızın en büyük ısı ve ışık kaynağı hangisidir?", options: ["Ay", "Güneş", "Kutup Yıldızı", "Ateş"], answer: 1, explanation: "Gezegenimizin doğal ana yaşam ve ışık kaynağı Güneş'tir." }
+      ],
+      sosyal: [
+        { q: "Türkiye Cumhuriyeti'nin başkenti neresidir?", options: ["İstanbul", "İzmir", "Ankara", "Bursa"], answer: 2, explanation: "Türkiye Cumhuriyeti'nin başkenti Ankara'dır." }
+      ],
+      ingilizce: [
+        { q: "'Yellow' kelimesi hangi renktir?", options: ["Mavi", "Sarı", "Kırmızı", "Yeşil"], answer: 1, explanation: "'Yellow' Türkçede Sarı anlamına gelir (CivCiv rengi!)." }
+      ]
+    };
+
+    let activeSubjectList = [];
+    let activeSubjectIdx = 0;
+
+    function selectSubject(subj) {
+      activeSubjectList = SUBJECT_QUESTIONS[subj] || SUBJECT_QUESTIONS.matematik;
+      activeSubjectIdx = 0;
+      loadActiveQuizQuestion();
+    }
+
+    function loadActiveQuizQuestion() {
+      const q = activeSubjectList[activeSubjectIdx];
+      loadSingleQuizDirect(q);
+      document.getElementById('quiz-progress-text').textContent = `Soru ${activeSubjectIdx + 1} / ${activeSubjectList.length}`;
+    }
+
+    function loadSingleQuizDirect(q) {
+      document.getElementById('quiz-subject-badge').textContent = q.subject || 'Ders Sorusu';
+      document.getElementById('quiz-question-text').textContent = q.q;
+      document.getElementById('quiz-solution-box').classList.add('hidden');
+      document.getElementById('quiz-next-btn').classList.add('hidden');
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left p-3.5 rounded-2xl border-2 border-amber-200 dark:border-slate-700 hover:border-amber-400 font-black text-sm text-gray-800 dark:text-gray-100 bg-amber-50/50 dark:bg-slate-800 transition card-bounce flex items-center gap-3';
+        btn.innerHTML = `<span class="w-7 h-7 rounded-lg bg-white dark:bg-slate-900 border flex items-center justify-center font-black text-amber-700 dark:text-amber-400 text-xs shrink-0">${letters[idx]}</span> <span>${opt}</span>`;
+        btn.onclick = () => answerActiveQuestion(idx, q, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function answerActiveQuestion(chosenIdx, qData, btnEl) {
+      const allBtns = document.querySelectorAll('#quiz-options-container button');
+      allBtns.forEach(b => b.disabled = true);
+
+      if (chosenIdx === qData.answer) {
+        btnEl.classList.remove('bg-amber-50/50', 'border-amber-200');
+        btnEl.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        AudioEngine.star();
+        addStars(2);
+      } else {
+        btnEl.classList.remove('bg-amber-50/50', 'border-amber-200');
+        btnEl.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+        if (allBtns[qData.answer]) {
+          allBtns[qData.answer].classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        }
+        AudioEngine.wrong();
+
+        // Yanlışlarım Havuzuna Ekle
+        State.mistakes.push({
+          id: Date.now(),
+          subject: qData.subject || 'Ders',
+          q: qData.q,
+          ans: qData.options[qData.answer],
+          explanation: qData.explanation
+        });
+        saveData();
+
+        // Çözümlü Kartı Aç
+        document.getElementById('quiz-solution-text').textContent = qData.explanation;
+        document.getElementById('quiz-solution-box').classList.remove('hidden');
+      }
+
+      document.getElementById('quiz-next-btn').classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+      activeSubjectIdx++;
+      if (activeSubjectIdx < activeSubjectList.length) {
+        loadActiveQuizQuestion();
+      } else {
+        alert('Tebrikler! Bu ders testini başarıyla tamamladın! 🐣⭐');
+        showScreen('school-screen');
+      }
+    }
+
+    /* 10. TEKRAR HAVUZU */
+    function openMistakesModal() {
+      AudioEngine.btnClick();
+      const list = document.getElementById('mistakes-list');
+      list.innerHTML = '';
+      if (State.mistakes.length === 0) {
+        list.innerHTML = '<div class="text-center text-sm font-bold text-gray-500 py-8">Harika! Tekrar havuzunda hiç yanlış sorun yok! 🌟</div>';
+      } else {
+        State.mistakes.forEach(m => {
+          const card = document.createElement('div');
+          card.className = 'bg-rose-50 dark:bg-slate-800 border-2 border-rose-200 dark:border-rose-900 rounded-2xl p-3.5 space-y-1.5';
+          card.innerHTML = `
+            <div class="text-xs font-black text-rose-700 dark:text-rose-400">${m.subject}</div>
+            <div class="text-sm font-bold text-gray-800 dark:text-gray-100">${m.q}</div>
+            <div class="text-xs font-extrabold text-emerald-700 dark:text-emerald-400">✓ Doğru Cevap: ${m.ans}</div>
+            <div class="text-[11px] font-semibold text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-900 p-2 rounded-xl border border-rose-100 dark:border-slate-700">${m.explanation}</div>
+          `;
+          list.appendChild(card);
+        });
+      }
+      document.getElementById('mistakes-modal').classList.remove('hidden');
+    }
+    function closeMistakesModal() {
+      document.getElementById('mistakes-modal').classList.add('hidden');
+    }
+    function clearMistakesPool() {
+      State.mistakes = [];
+      saveData();
+      openMistakesModal();
+    }
+
+    /* GELİŞTİRİCİ MODALI */
+    function openDeveloperModal() {
+      AudioEngine.btnClick();
+      document.getElementById('developer-modal').classList.remove('hidden');
+    }
+    function closeDeveloperModal() {
+      document.getElementById('developer-modal').classList.add('hidden');
+    }
+
+    /* 11. YILDIZ AVCISI CANVAS OYUNU */
+    let starCanvas, starCtx, starLoopId = null;
+    let starScore = 0, starPlayerX = 160;
+    let fallingStars = [];
+
+    function startStarArcadeGame() {
+      showScreen('star-arcade-screen');
+      starCanvas = document.getElementById('star-arcade-canvas');
+      starCtx = starCanvas.getContext('2d');
+      starScore = 0; starPlayerX = 160; fallingStars = [];
+
+      window.onkeydown = (e) => {
+        if (e.key === 'ArrowLeft' && starPlayerX > 30) starPlayerX -= 25;
+        if (e.key === 'ArrowRight' && starPlayerX < 320) starPlayerX += 25;
+      };
+      document.getElementById('star-left-btn').onclick = () => { if (starPlayerX > 30) starPlayerX -= 30; };
+      document.getElementById('star-right-btn').onclick = () => { if (starPlayerX < 320) starPlayerX += 30; };
+
+      stopStarArcadeLoop();
+      starArcadeLoop();
+    }
+
+    function stopStarArcadeLoop() {
+      if (starLoopId) cancelAnimationFrame(starLoopId);
+      starLoopId = null;
+    }
+
+    function starArcadeLoop() {
+      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+
+      if (Math.random() < 0.04) {
+        fallingStars.push({ x: Math.random() * 320 + 25, y: 0, isBomb: Math.random() < 0.25 });
+      }
+
+      for (let i = fallingStars.length - 1; i >= 0; i--) {
+        const s = fallingStars[i];
+        s.y += 3.5;
+        starCtx.font = '24px sans-serif';
+        starCtx.fillText(s.isBomb ? '💣' : '⭐', s.x, s.y);
+
+        if (Math.abs(s.x - starPlayerX) < 35 && Math.abs(s.y - 380) < 30) {
+          if (s.isBomb) {
+            AudioEngine.wrong();
+            alert(`Oyun Bitti! Topladığın Yıldız: ${starScore}`);
+            stopStarArcadeLoop();
+            showScreen('games-hub-screen');
+            return;
+          } else {
+            starScore++;
+            addStars(1);
+          }
+          fallingStars.splice(i, 1);
+        } else if (s.y > 420) {
+          fallingStars.splice(i, 1);
+        }
+      }
+
+      // Sepet & CivCiv
+      starCtx.font = '36px sans-serif';
+      starCtx.fillText('🧺', starPlayerX, 395);
+      starCtx.font = '22px sans-serif';
+      starCtx.fillText('🐥', starPlayerX + 8, 385);
+
+      document.getElementById('star-score-text').textContent = starScore;
+      starLoopId = requestAnimationFrame(starArcadeLoop);
+    }
+
+    function startMemoryGame() {
+      alert('Süper Hafıza kartları karıştırılıyor... Sevimli kart eşleştirme modu hazır! 🧠');
+    }
+    function startMoleGame() {
+      alert('Bahçedeki köstebekler belirdi! Hızlıca tıklayıp yakala! 🐾');
+    }
+
+    /* UYGULAMA BAŞLATICI */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+      renderDevTasks('all');
+      selectSubject('matematik');
+    });
+  </script>
+</body>
+</html>
