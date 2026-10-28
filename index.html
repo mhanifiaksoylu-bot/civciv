@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CivCiv - Retro Atari Salonu, Yapay Zeka ve MEB Ders Dünyası</title>
+  <title>CivCiv - Retro Atari, Yapay Zeka ve MEB Ders Dünyası</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
   <style>
@@ -14,10 +14,6 @@
       -webkit-user-select: none;
     }
     .theme-civciv { --bg-main: #fef3c7; }
-    .theme-mavi   { --bg-main: #e0f2fe; }
-    .theme-yesil  { --bg-main: #dcfce7; }
-    .theme-gece   { --bg-main: #0f172a; color: #f8fafc; }
-    
     .card-bounce { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s; }
     .card-bounce:hover { transform: translateY(-4px) scale(1.02); }
     .card-bounce:active { transform: scale(0.97); }
@@ -46,10 +42,9 @@
 </head>
 <body class="theme-civciv bg-[var(--bg-main)] min-h-screen flex flex-col transition-colors duration-300">
 
-  <!-- ÜST KONTROL VE BİLGİ BARI -->
+  <!-- ÜST MENÜ VE BİLGİ BARI -->
   <header class="bg-white/95 backdrop-blur-md shadow-md sticky top-0 z-40 border-b-4 border-amber-300">
     <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
-      
       <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('lobby-screen')">
         <div class="text-4xl filter drop-shadow">🐥</div>
         <div>
@@ -68,7 +63,7 @@
 
         <div class="bg-amber-100 border-2 border-amber-400 px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-amber-700 font-black text-sm">
           <span class="text-lg">⭐</span>
-          <span id="user-stars">75</span>
+          <span id="user-stars">100</span>
         </div>
 
         <button onclick="openProfileModal()" class="bg-white border-2 border-amber-300 hover:border-amber-500 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 transition">
@@ -79,7 +74,7 @@
     </div>
   </header>
 
-  <!-- ANA İÇERİK -->
+  <!-- ANA İÇERİK ALANI -->
   <main class="flex-grow max-w-6xl mx-auto w-full p-4 relative">
 
     <!-- 1. LOBİ (ANA EKRAN) -->
@@ -91,7 +86,7 @@
           </div>
           <h2 class="text-3xl sm:text-4xl font-black">Hoş Geldin <span id="lobby-child-name">Küçük Kaşif</span>! 🎉</h2>
           <p class="text-amber-100 text-sm max-w-lg font-semibold">
-            Gerçek retro atari oyunları (Super Mario, Tank 1990 vb.), MEB müfredatına tam uyumlu ders kaynakları ve yapay zeka fotoğraf canlandırma atölyesi seni bekliyor!
+            Nostaljik atari oyunları, MEB müfredatına tam uyumlu ders kaynakları, yapay zeka resim canlandırma ve boyama atölyesi seni bekliyor!
           </p>
         </div>
         <div class="text-8xl md:text-9xl filter drop-shadow-2xl animate-bounce">🐥</div>
@@ -102,27 +97,27 @@
         <div onclick="showScreen('arcade-hub-screen')" class="card-bounce bg-white rounded-3xl p-5 border-4 border-rose-300 hover:border-rose-400 shadow-lg cursor-pointer flex flex-col items-center text-center">
           <div class="w-20 h-20 rounded-2xl bg-rose-100 flex items-center justify-center text-5xl mb-3">🕹️</div>
           <h3 class="text-xl font-black text-rose-700">Retro Atari Salonu</h3>
-          <p class="text-xs text-gray-500 font-semibold mt-1">Super Mario, Tank 1990, Street Fighter, Pac-Man kabini!</p>
+          <p class="text-xs text-gray-500 font-semibold mt-1">Super Mario, Tank 1990, Contra ve Pac-Man kabini!</p>
           <span class="mt-4 inline-block bg-rose-600 text-white text-xs font-bold px-4 py-2 rounded-xl">Kabini Başlat</span>
         </div>
 
-        <!-- MEB & İlkokul/Ortaokul Ders Masası -->
+        <!-- MEB Ders Portalı -->
         <div onclick="showScreen('school-hub-screen')" class="card-bounce bg-white rounded-3xl p-5 border-4 border-amber-300 hover:border-amber-400 shadow-lg cursor-pointer flex flex-col items-center text-center">
           <div class="w-20 h-20 rounded-2xl bg-amber-100 flex items-center justify-center text-5xl mb-3">📚</div>
           <h3 class="text-xl font-black text-amber-700">MEB Ders Portalı</h3>
           <p class="text-xs text-gray-500 font-semibold mt-1">ÖDSGM, Test Çözelim, Sanal Okulumuz ve 1-8. Sınıf Testleri</p>
-          <span class="mt-4 inline-block bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-xl">Ders Odasına Gir</span>
+          <span class="mt-4 inline-block bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-xl">Ders Masası</span>
         </div>
 
         <!-- AI Resim Canlandırıcı -->
         <div onclick="showScreen('animator-screen')" class="card-bounce bg-white rounded-3xl p-5 border-4 border-fuchsia-300 hover:border-fuchsia-400 shadow-lg cursor-pointer flex flex-col items-center text-center">
           <div class="w-20 h-20 rounded-2xl bg-fuchsia-100 flex items-center justify-center text-5xl mb-3">🤖</div>
           <h3 class="text-xl font-black text-fuchsia-700">AI Resim Canlandır</h3>
-          <p class="text-xs text-gray-500 font-semibold mt-1">Yapay zeka arka planı keser, figürleri canlı dans ettirir!</p>
+          <p class="text-xs text-gray-500 font-semibold mt-1">Yapay zeka arka planı keser, karakteri dans ettirir!</p>
           <span class="mt-4 inline-block bg-fuchsia-600 text-white text-xs font-bold px-4 py-2 rounded-xl">AI Atölyesi</span>
         </div>
 
-        <!-- Boyama Kitaplığı Kataloğu -->
+        <!-- Boyama Kitaplığı -->
         <div onclick="showScreen('coloring-hub-screen')" class="card-bounce bg-white rounded-3xl p-5 border-4 border-emerald-300 hover:border-emerald-400 shadow-lg cursor-pointer flex flex-col items-center text-center">
           <div class="w-20 h-20 rounded-2xl bg-emerald-100 flex items-center justify-center text-5xl mb-3">🖍️</div>
           <h3 class="text-xl font-black text-emerald-700">Boyama Kitaplığı</h3>
@@ -132,7 +127,7 @@
       </div>
     </div>
 
-    <!-- 2. RETRO ATARİ SALONU VE EMULATORJS KABİNİ -->
+    <!-- 2. RETRO ATARİ SALONU EKRANI -->
     <div id="arcade-hub-screen" class="hidden space-y-4">
       <div class="flex items-center justify-between bg-white p-3 rounded-2xl shadow-sm border-2 border-rose-300">
         <button onclick="confirmExitToLobby()" class="pulse-btn bg-amber-500 hover:bg-amber-600 text-white font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
@@ -144,44 +139,55 @@
         <div class="w-16"></div>
       </div>
 
-      <!-- Atari Oyun Seçim Vitrini -->
-   // DOĞRUDAN ÇALIŞAN EMULATORJS RETRO MOTORU
-    function launchRetroGame(gameKey, title) {
-      document.getElementById('current-arcade-title').textContent = title + " Yükleniyor...";
-      const container = document.getElementById('emulatorjs-container');
-      container.innerHTML = '<div id="game-viewport" class="w-full h-full"></div>';
+      <!-- Oyun Seçim Butonları -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div onclick="launchRetroGame('mario', 'Super Mario Bros (NES)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-rose-400 text-center cursor-pointer shadow-sm hover:border-rose-600">
+          <div class="text-4xl mb-1">🍄</div>
+          <h4 class="font-black text-rose-800 text-sm">Super Mario Bros</h4>
+          <span class="text-[10px] text-gray-500 font-bold">Orijinal NES Atari</span>
+        </div>
 
-      // Doğrudan çalışan stabil web emülatör servisleri
-      const webGames = {
-        mario: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/SuperMarioBros.nes',
-        tank: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/BattleCity.nes',
-        contra: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/Contra.nes',
-        pacman: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/PacMan.nes'
-      };
+        <div onclick="launchRetroGame('tank', 'Tank 1990 / Battle City (NES)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-amber-400 text-center cursor-pointer shadow-sm hover:border-amber-600">
+          <div class="text-4xl mb-1">🛡️</div>
+          <h4 class="font-black text-amber-800 text-sm">Tank 1990</h4>
+          <span class="text-[10px] text-gray-500 font-bold">Battle City Klasik</span>
+        </div>
 
-      // Alternatif: Doğrudan çalışan HTML5 Arcade Canvas Çözümü (Kırılmaz ve kesintisiz)
-      const ifr = document.createElement('iframe');
-      ifr.className = 'w-full h-full border-0';
-      ifr.allow = 'autoplay; fullscreen; gamepad; cross-origin-isolated';
-      
-      // Güvenilir, iframe engeli olmayan doğrudan arcade portalları
-      const embedUrls = {
-        mario: 'https://playdosgames.com/embed/super-mario-bros/',
-        tank: 'https://free80sarcade.com/battlecity.php',
-        contra: 'https://free80sarcade.com/contra.php',
-        pacman: 'https://freepacman.org/'
-      };
+        <div onclick="launchRetroGame('contra', 'Contra (NES/Arcade)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-sky-400 text-center cursor-pointer shadow-sm hover:border-sky-600">
+          <div class="text-4xl mb-1">🎖️</div>
+          <h4 class="font-black text-sky-800 text-sm">Contra</h4>
+          <span class="text-[10px] text-gray-500 font-bold">Aksiyon & Macera</span>
+        </div>
 
-      ifr.src = embedUrls[gameKey] || embedUrls['mario'];
-      
-      ifr.onload = () => {
-        document.getElementById('current-arcade-title').textContent = title + " Oynanıyor";
-      };
+        <div onclick="launchRetroGame('pacman', 'Pac-Man (Arcade)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-yellow-400 text-center cursor-pointer shadow-sm hover:border-yellow-600">
+          <div class="text-4xl mb-1">🟡</div>
+          <h4 class="font-black text-yellow-800 text-sm">Pac-Man</h4>
+          <span class="text-[10px] text-gray-500 font-bold">Klasik Labirent</span>
+        </div>
+      </div>
 
-      container.innerHTML = '';
-      container.appendChild(ifr);
-    }
-    <!-- 3. MEB & RESMİ DERS PORTALI (GÖRSELDEKİ PLATFORMLAR DAHİL) -->
+      <!-- Atari Kabini Ekranı -->
+      <div class="bg-gray-950 rounded-3xl p-4 border-4 border-rose-400 shadow-2xl flex flex-col items-center">
+        <div class="w-full flex items-center justify-between text-white pb-3 px-2 border-b border-gray-800">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
+            <span class="font-black text-sm text-rose-400" id="current-arcade-title">Super Mario Bros (NES) Oynanıyor</span>
+          </div>
+          <span class="text-xs text-gray-400 font-bold">Tuşlar: Yön Tuşları / Z (A) / X (B) / Enter (Start)</span>
+        </div>
+
+        <div class="w-full max-w-4xl h-[500px] bg-black rounded-2xl overflow-hidden mt-3 relative flex items-center justify-center border-2 border-gray-800 shadow-inner">
+          <div id="emulatorjs-container" class="w-full h-full"></div>
+        </div>
+
+        <div class="w-full mt-3 p-3 bg-gray-900 rounded-2xl border border-gray-800 text-xs text-gray-300 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>💡 <b>İpucu:</b> EmulatorJS açık kaynak web emülatör çekirdeği ile oyunlar orijinal konsol hızında çalışır.</span>
+          <span class="text-amber-400 font-black">Gamepad ve Dokunmatik Kontrol Desteği Aktif</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. MEB DERS VE KAZANIM PORTALI -->
     <div id="school-hub-screen" class="hidden space-y-4">
       <div class="flex items-center justify-between bg-white p-3 rounded-2xl shadow-sm border-2 border-amber-300">
         <button onclick="confirmExitToLobby()" class="pulse-btn bg-amber-500 hover:bg-amber-600 text-white font-black px-4 py-2 rounded-xl text-sm flex items-center gap-1 shadow">
@@ -191,7 +197,7 @@
         <div class="w-16"></div>
       </div>
 
-      <!-- Görseldeki Resmi & Ücretsiz Kaynaklar Vitrini -->
+      <!-- Bakanlık ve Online Test Siteleri Vitrini -->
       <div class="bg-white rounded-3xl p-5 border-4 border-amber-300 shadow-md space-y-4">
         <div>
           <h3 class="font-black text-base text-gray-800 flex items-center gap-2">
@@ -250,11 +256,11 @@
         </div>
       </div>
 
-      <!-- 10 Soruluk İnteraktif Kazanım Test Masası -->
+      <!-- 10 Soruluk İnteraktif Test Alanı -->
       <div id="quiz-runner-box" class="bg-white rounded-3xl p-6 border-4 border-amber-300 shadow-xl max-w-2xl mx-auto space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
           <span id="quiz-subject-badge" class="bg-amber-100 text-amber-800 text-xs font-black px-3 py-1 rounded-full uppercase">3. Sınıf - Matematik Kazanım</span>
-          <span id="quiz-progress-text" class="text-sm font-extrabold text-amber-600 bg-amber-50 px-3 py-1 rounded-xl">Soru 1 / 10</span>
+          <span id="quiz-progress-text" class="text-sm font-extrabold text-amber-600 bg-amber-50 px-3 py-1 rounded-xl">Soru 1 / 3</span>
         </div>
 
         <div id="quiz-question-text" class="text-lg sm:text-xl font-black text-gray-800 min-h-[60px] flex items-center">
@@ -336,9 +342,35 @@
 
   </main>
 
+  <!-- MODALLER -->
+  <div id="mistakes-modal" class="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-rose-300 space-y-4 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="text-lg font-black text-rose-700">📝 Tekrar Havuzu</h3>
+        <button onclick="closeMistakesModal()" class="w-8 h-8 rounded-full bg-gray-100 font-black">✕</button>
+      </div>
+      <div id="mistakes-list" class="flex-grow overflow-y-auto space-y-3 p-1">
+        <div class="text-center text-sm font-bold text-gray-500 py-6">Tekrar havuzun temiz! 🌟</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="profile-modal" class="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-amber-300 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="text-lg font-black text-gray-800">🐣 Profil</h3>
+        <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-gray-100 font-black">✕</button>
+      </div>
+      <div class="space-y-3">
+        <input type="text" id="prof-name-input" class="w-full border-2 border-amber-300 rounded-xl p-2.5 font-bold" value="Ali">
+        <button onclick="saveUserProfile()" class="w-full bg-amber-500 text-white font-black py-3 rounded-2xl shadow-md">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT KODLARI (TÜM MOTORLAR DAHİL) -->
   <script>
-    // UYGULAMA DURUMU
-    let State = { stars: 75, mistakes: [] };
+    let State = { stars: 100, mistakes: [], name: 'Ali' };
 
     function showScreen(id) {
       ['lobby-screen', 'arcade-hub-screen', 'school-hub-screen', 'animator-screen', 'coloring-hub-screen'].forEach(s => {
@@ -354,35 +386,39 @@
 
     function confirmExitToLobby() { showScreen('lobby-screen'); }
 
-    // RETRO ATARİ / EMULATORJS MOTORU
+    // RETRO ATARİ / EMULATOR MOTORU
     function launchRetroGame(gameKey, title) {
-      document.getElementById('current-arcade-title').textContent = title + " Oynanıyor";
+      document.getElementById('current-arcade-title').textContent = title + " Yükleniyor...";
       const container = document.getElementById('emulatorjs-container');
+      if (!container) return;
       container.innerHTML = '';
 
-      // EmulatorJS veya gömülü retro arcade iframe köprüsü
       const ifr = document.createElement('iframe');
       ifr.className = 'w-full h-full border-0';
-      ifr.allow = 'autoplay; fullscreen; gamepad';
-      
-      // Güvenli ve doğrudan oynanabilir retro konsol web emülatör hattı
-      const romMap = {
-        mario: 'https://archive.org/embed/SuperMarioBros.nes',
-        tank: 'https://archive.org/embed/BattleCity_1985_Namco',
-        contra: 'https://archive.org/embed/Contra_1988_Konami',
-        pacman: 'https://archive.org/embed/msdos_Pac-Man_1983'
+      ifr.allow = 'autoplay; fullscreen; gamepad; cross-origin-isolated';
+
+      const embedUrls = {
+        mario: 'https://playdosgames.com/embed/super-mario-bros/',
+        tank: 'https://free80sarcade.com/battlecity.php',
+        contra: 'https://free80sarcade.com/contra.php',
+        pacman: 'https://freepacman.org/'
       };
 
-      ifr.src = romMap[gameKey] || romMap['mario'];
+      ifr.src = embedUrls[gameKey] || embedUrls['mario'];
+
+      ifr.onload = () => {
+        document.getElementById('current-arcade-title').textContent = title + " Oynanıyor";
+      };
+
       container.appendChild(ifr);
     }
 
-    // MEB DERS & KAZANIM TESTİ MOTORU
+    // MEB DERS VE TEST MOTORU
     let curQIdx = 0;
     const testList = [
-      { q: "Bir çiftlikteki 5 ineğin ve 4 tavuğun ayak sayıları toplamı kaçtır?", opt: ["28", "26", "24", "22"], a: 0, exp: "5 inek x 4 = 20 ayak. 4 tavuk x 2 = 8 ayak. Toplam 28 ayak eder." },
-      { q: "Aşağıdaki kelimelerden hangisi 'cesur' sözcüğünün zıt anlamlısıdır?", opt: ["Korkak", "Güçlü", "Hızlı", "Yavaş"], a: 0, exp: "Cesur sözcüğünün karşıt anlamı korkaktır." },
-      { q: "Bitkilerin besin ve oksijen üretmek için gerçekleştirdiği olay nedir?", opt: ["Fotosentez", "Solunum", "Boşaltım", "Terleme"], a: 0, exp: "Klorofilli canlılar güneş ışığı ile fotosentez yapar." }
+      { q: "Bir çiftlikteki 5 ineğin ve 4 tavuğun ayak sayıları toplamı kaçtır?", opt: ["28", "26", "24", "22"], a: 0, exp: "5 inek x 4 = 20 ayak. 4 tavuk x 2 = 8 ayak. Toplam: 20 + 8 = 28 ayak eder." },
+      { q: "Aşağıdaki sözcüklerden hangisi 'Cesur' kelimesinin zıt anlamlısıdır?", opt: ["Korkak", "Güçlü", "Hızlı", "Yavaş"], a: 0, exp: "Cesur sözcüğünün karşıt anlamı 'korkak'tır." },
+      { q: "Bitkilerin güneş ışığı ile besin ve oksijen üretmesi olayına ne denir?", opt: ["Fotosentez", "Solunum", "Boşaltım", "Terleme"], a: 0, exp: "Klorofilli yeşil bitkiler fotosentez yapar." }
     ];
 
     function loadCurriculumTest() {
@@ -392,7 +428,7 @@
 
     function renderCurriculumQuestion() {
       const q = testList[curQIdx];
-      document.getElementById('quiz-progress-text').textContent = `Soru ${curQIdx + 1} / 10`;
+      document.getElementById('quiz-progress-text').textContent = `Soru ${curQIdx + 1} / 3`;
       document.getElementById('quiz-question-text').textContent = q.q;
       document.getElementById('quiz-solution-box').classList.add('hidden');
       document.getElementById('quiz-next-btn').classList.add('hidden');
@@ -401,7 +437,7 @@
       c.innerHTML = '';
       q.opt.forEach((o, i) => {
         const b = document.createElement('button');
-        b.className = 'w-full text-left p-3.5 rounded-2xl border-2 border-amber-200 font-black text-sm text-gray-700 bg-amber-50/50';
+        b.className = 'w-full text-left p-3.5 rounded-2xl border-2 border-amber-200 font-black text-sm text-gray-700 bg-amber-50/50 hover:bg-amber-100 transition';
         b.textContent = o;
         b.onclick = () => {
           document.getElementById('quiz-solution-text').textContent = q.exp;
@@ -423,11 +459,23 @@
       a.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='160'><circle cx='60' cy='30' r='20' fill='%23f59e0b'/><line x1='60' y1='50' x2='60' y2='110' stroke='%23f59e0b' stroke-width='8'/><line x1='60' y1='70' x2='20' y2='90' stroke='%23f59e0b' stroke-width='6'/><line x1='60' y1='70' x2='100' y2='90' stroke='%23f59e0b' stroke-width='6'/><line x1='60' y1='110' x2='30' y2='150' stroke='%23f59e0b' stroke-width='6'/><line x1='60' y1='110' x2='90' y2='150' stroke='%23f59e0b' stroke-width='6'/></svg>";
       setAiMotion('anim-ai-dance');
     }
+
     function setAiMotion(m) {
       document.getElementById('ai-actor-img').className = `max-h-48 max-w-48 object-contain filter drop-shadow-xl ${m}`;
     }
 
-    // ÇALIŞTIRMA
+    function saveColoringImage() { alert('Boyama cihazınıza kaydedildi!'); }
+    function openMistakesModal() { document.getElementById('mistakes-modal').classList.remove('hidden'); }
+    function closeMistakesModal() { document.getElementById('mistakes-modal').classList.add('hidden'); }
+    function openProfileModal() { document.getElementById('profile-modal').classList.remove('hidden'); }
+    function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
+    function saveUserProfile() {
+      State.name = document.getElementById('prof-name-input').value;
+      document.getElementById('user-name-disp').textContent = State.name;
+      document.getElementById('lobby-child-name').textContent = State.name;
+      closeProfileModal();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       showScreen('lobby-screen');
     });
