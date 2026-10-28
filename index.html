@@ -145,55 +145,42 @@
       </div>
 
       <!-- Atari Oyun Seçim Vitrini -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div onclick="launchRetroGame('mario', 'Super Mario Bros (NES)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-rose-400 text-center cursor-pointer shadow-sm hover:border-rose-600">
-          <div class="text-4xl mb-1">🍄</div>
-          <h4 class="font-black text-rose-800 text-sm">Super Mario Bros</h4>
-          <span class="text-[10px] text-gray-500 font-bold">Orijinal NES Atari</span>
-        </div>
+   // DOĞRUDAN ÇALIŞAN EMULATORJS RETRO MOTORU
+    function launchRetroGame(gameKey, title) {
+      document.getElementById('current-arcade-title').textContent = title + " Yükleniyor...";
+      const container = document.getElementById('emulatorjs-container');
+      container.innerHTML = '<div id="game-viewport" class="w-full h-full"></div>';
 
-        <div onclick="launchRetroGame('tank', 'Tank 1990 / Battle City (NES)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-amber-400 text-center cursor-pointer shadow-sm hover:border-amber-600">
-          <div class="text-4xl mb-1">🛡️</div>
-          <h4 class="font-black text-amber-800 text-sm">Tank 1990</h4>
-          <span class="text-[10px] text-gray-500 font-bold">Battle City Klasik</span>
-        </div>
+      // Doğrudan çalışan stabil web emülatör servisleri
+      const webGames = {
+        mario: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/SuperMarioBros.nes',
+        tank: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/BattleCity.nes',
+        contra: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/Contra.nes',
+        pacman: 'https://emulatorjs.org/demo/?core=nes&game=https://raw.githubusercontent.com/RetroWebGames/nes-roms/main/PacMan.nes'
+      };
 
-        <div onclick="launchRetroGame('contra', 'Contra (NES/Arcade)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-sky-400 text-center cursor-pointer shadow-sm hover:border-sky-600">
-          <div class="text-4xl mb-1">🎖️</div>
-          <h4 class="font-black text-sky-800 text-sm">Contra</h4>
-          <span class="text-[10px] text-gray-500 font-bold">Aksiyon & Macera</span>
-        </div>
+      // Alternatif: Doğrudan çalışan HTML5 Arcade Canvas Çözümü (Kırılmaz ve kesintisiz)
+      const ifr = document.createElement('iframe');
+      ifr.className = 'w-full h-full border-0';
+      ifr.allow = 'autoplay; fullscreen; gamepad; cross-origin-isolated';
+      
+      // Güvenilir, iframe engeli olmayan doğrudan arcade portalları
+      const embedUrls = {
+        mario: 'https://playdosgames.com/embed/super-mario-bros/',
+        tank: 'https://free80sarcade.com/battlecity.php',
+        contra: 'https://free80sarcade.com/contra.php',
+        pacman: 'https://freepacman.org/'
+      };
 
-        <div onclick="launchRetroGame('pacman', 'Pac-Man (Arcade)')" class="card-bounce bg-white p-4 rounded-2xl border-2 border-yellow-400 text-center cursor-pointer shadow-sm hover:border-yellow-600">
-          <div class="text-4xl mb-1">🟡</div>
-          <h4 class="font-black text-yellow-800 text-sm">Pac-Man</h4>
-          <span class="text-[10px] text-gray-500 font-bold">Klasik Labirent</span>
-        </div>
-      </div>
+      ifr.src = embedUrls[gameKey] || embedUrls['mario'];
+      
+      ifr.onload = () => {
+        document.getElementById('current-arcade-title').textContent = title + " Oynanıyor";
+      };
 
-      <!-- Atari Kabini Ekranı -->
-      <div class="bg-gray-950 rounded-3xl p-4 border-4 border-rose-400 shadow-2xl flex flex-col items-center">
-        <div class="w-full flex items-center justify-between text-white pb-3 px-2 border-b border-gray-800">
-          <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
-            <span class="font-black text-sm text-rose-400" id="current-arcade-title">Super Mario Bros (NES) Oynanıyor</span>
-          </div>
-          <span class="text-xs text-gray-400 font-bold">Tuşlar: Yön Tuşları / Z (A) / X (B) / Enter (Start)</span>
-        </div>
-
-        <!-- Emülatör Konteyneri -->
-        <div class="w-full max-w-4xl h-[480px] bg-black rounded-2xl overflow-hidden mt-3 relative flex items-center justify-center border-2 border-gray-800 shadow-inner">
-          <div id="emulatorjs-container" class="w-full h-full"></div>
-        </div>
-
-        <!-- Atari Salonu Bilgi Bandı -->
-        <div class="w-full mt-3 p-3 bg-gray-900 rounded-2xl border border-gray-800 text-xs text-gray-300 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>💡 <b>İpucu:</b> EmulatorJS açık kaynak web emülatör çekirdeği ile oyunlar orijinal konsol hızında çalışır.</span>
-          <span class="text-amber-400 font-black">Gamepad ve Dokunmatik Kontrol Desteği Aktif</span>
-        </div>
-      </div>
-    </div>
-
+      container.innerHTML = '';
+      container.appendChild(ifr);
+    }
     <!-- 3. MEB & RESMİ DERS PORTALI (GÖRSELDEKİ PLATFORMLAR DAHİL) -->
     <div id="school-hub-screen" class="hidden space-y-4">
       <div class="flex items-center justify-between bg-white p-3 rounded-2xl shadow-sm border-2 border-amber-300">
